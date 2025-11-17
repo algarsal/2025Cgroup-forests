@@ -1,0 +1,107 @@
+---
+title: Design Project Plant morphological traits and ecological stoichiometry in disturbed vs. conserved forests
+subtitle: Project for the subject Data Acquistion, Analysis and Scientific Methods in Life Sciences.  
+author:
+   - affiliation: Instituto Agroforestal Mediterráneo. Departamento de Ecosistemas Agroforestales. Universidad Politécnica de Valencia.
+     affiliation-url: https://www.upv.es/entidades/DEAF/
+     email: algarsal@upv.es
+     name: Alfonso Garmendia
+     orcid: 0000-0001-6837-1818
+     url: https://garmendia.blogs.upv.es/
+title-block-banner: true
+date: last-modified
+date-format: iso
+lang: en-US
+code-fold: true
+code_folding: hide 
+toc: true
+toc-depth: 6
+toc-location: body
+format:
+  html:
+    self_contained: TRUE
+    embed-resources: true
+---
+
+# Teacher comments
+
+## Group C
+
+Members: Ahdamson, Ahmed; Eldina, Gresia; Kelly, Ngwankfu; Hejase, Miguel
+
+Github users: ahadamson, eldinamareta-boop, Kellybunyui-Ngwankfu, Hejase
+
+Link to article:  https://peerj.com/articles/20301
+
+Link to data:  https://dfzljdn9uc3pi.cloudfront.net/2025/20301/1/Data.xlsx  
+
+## The project design
+
+The project is right. You have a nice article to follow and enough data to work with. 
+
+I think it will be interesting to do a Discriminant Analysis to find a model for disturbed - conserved forest and also to find the traits that better separate them. 
+Also a Principal Components analysis could be helpful. Can be with all the variables or with a selected group or two (or more) selected groups. 
+
+A table of correlations and a table of anovas can be useful to understand the individual effects. 
+
+And for some variables it can be interesting to find the linear model between variables and see if the species or the forest type can interact. 
+
+You can start with your project (check the task "Your project. Preliminary results" in PoliformaT). 
+
+
+# Students proposal
+
+## Design Project
+
+Title : Plant morphological traits and ecological stoichiometry in disturbed *vs*. conserved forests
+
+Data description :
+
+Table S4 shows the data for various functional traits including morphological and nutrient content from leaves collected from disturbed and conserved forests.
+
+Link supplementary data : <https://peerj.com/articles/20301/#supp-1>
+
+Variables :
+
+1\. Forest type (disturbed vs conserve)
+
+2\. Plant species : 62 species in disturbed forests and 43 species in conserved forests
+
+3\. Traits : 12 morphological traits and 24 ecological stoichiometry traits
+
+4\. Left nutrients concentration and Ratio describing plant nutrient balance
+
+Objectives :
+
+1.  To analyze and compare plant functional traits (morphological and stoichiometric traits) in disturbed and conserved forests.
+2.  To examine relationships among various functional traits to investigate disparities in life history strategies between the two forest types.
+
+Research questions :
+
+1.  Is there any significant comparison in plant functional traits (morphological and stoichiometric traits) between disturbed and conserved forests.
+2.  Is there significant correlation among various functional traits and the differences in life history strategies between the two forest types.
+
+Main hypotheses :
+
+1.  Null Hypothesis (HO): There is no significant difference in plant morphological traits and ecological stoichiometry between disturbed and conserved forests.
+
+    Alternate Hypothesis (H1): Plant morphological traits and ecological stoichiometry differ significantly between disturbed and conserved forests.
+
+2.  Null Hypothesis (HO): There are no correlation among various functional traits and no differences in life history strategies between the two forest types.
+
+    Alternate Hypothesis (H1): There are significant correlation among various functional traits and significant differences in life history strategies between the two forest types.
+
+Main analyses :
+
+1.  MANOVA
+2.  ANOVA
+3.  Post hoc
+4.  Linear Regression
+5.  Kruskal Walis
+6.  Shapiro Test
+7.  Pearsons
+8.  Correlation
+9.  T - Test
+
+```{r}
+```
