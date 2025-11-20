@@ -93,15 +93,12 @@ Main hypotheses :
 
 Main analyses :
 
-1.  MANOVA
+1.  Discriminant Analysis 
 2.  ANOVA
-3.  Post hoc
-4.  Linear Regression
-5.  Kruskal Walis
-6.  Shapiro Test
-7.  Pearsons
-8.  Correlation
-9.  T - Test
+3.  Principal Components Analysis 
+4.  Linear model
+5.  Correlation
+
 
 ```{r}
 ```
