@@ -94,7 +94,7 @@ Main hypotheses :
 Main analyses :
 
 1.  Discriminant Analysis 
-2.  ANOVA and MANOVA
+2.  ANOVA
 3.  Principal Components Analysis 
 4.  Linear model
 5.  Correlation
