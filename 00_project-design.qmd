@@ -69,7 +69,7 @@ Variables :
 
 3\. Traits : 12 morphological traits and 24 ecological stoichiometry traits
 
-4\. Left nutrients concentration and Ratio describing plant nutrient balance
+4\. Left nutrients concentration and Ratio describing plant nutrient balance
 
 Objectives :
 
@@ -85,7 +85,7 @@ Main hypotheses :
 
 1.  Null Hypothesis (HO): There is no significant difference in plant morphological traits and ecological stoichiometry between disturbed and conserved forests.
 
-    Alternate Hypothesis (H1): Plant morphological traits and ecological stoichiometry differ significantly between disturbed and conserved forests.
+    Alternate Hypothesis (H1): Plant morphological traits and ecological stoichiometry differ significantly between disturbed and conserved forests.
 
 2.  Null Hypothesis (HO): There are no correlation among various functional traits and no differences in life history strategies between the two forest types.
 
@@ -93,11 +93,12 @@ Main hypotheses :
 
 Main analyses :
 
-1.  Discriminant Analysis 
-2.  ANOVA
-3.  Principal Components Analysis 
-4.  Linear model
-5.  Correlation
+1. ANOVA to compare forest type between species
+2. Correlation to see which variable to measuring the same thing
+3. Principal Components Analysis to
+4. Discriminant Analysis to 
+5. Linear model to
+
 
 
 ```{r}
