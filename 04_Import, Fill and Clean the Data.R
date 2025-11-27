@@ -7,7 +7,8 @@ l <- readxl::read_excel("Data/Data.xlsx","Table S4", range = "A1:A1",
                         col_names = FALSE)
 l <- l[[1]][1]
 
-#fill the data : Species
+#fill the data : Species and Forest type
 library(tidyr)
 names(d)
-d1 <- fill(d, Species)
+d1 <- fill(d, Species, "Forest type")
+
