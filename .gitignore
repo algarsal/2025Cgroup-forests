@@ -6,3 +6,4 @@
 *.docx
 *.xlsx
 *.pdf
+!Data/Data.xlsx 

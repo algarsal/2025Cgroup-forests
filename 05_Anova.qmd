@@ -1,0 +1,25 @@
+---
+title: "05_Anova"
+format: html
+
+---
+```{r}
+load("Data/foret.Rdata")
+
+```
+
+
+
+
+```{r}
+#Anova
+aov1<- aov(leaf.thick~For.type, data = foret)
+summary(aov1)
+
+
+aov1<- aov(leaf.thick~For.type, data = foret [foret$Species=="Acer davidii",])
+summary(aov1)
+table(foret$Species, foret$For.type)
+
+```
+

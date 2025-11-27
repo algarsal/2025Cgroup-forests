@@ -27,7 +27,7 @@ names(d1) <- new.name
 foret <- d1
 save(foret, orig.name, l,
      file = "Data/foret.Rdata")
-write.csv(d, file = "Data/foret.csv" )
+write.csv(d, file = "Data/foret.csv" )a
 
 
 load("Data/foret.Rdata")
