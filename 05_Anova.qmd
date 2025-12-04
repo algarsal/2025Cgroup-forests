@@ -26,4 +26,50 @@ BIC(aov2,aov3)
 
 
 
+```{r}
+#For loop for ANOVA
+
+responses <- c("For.type", "Species", "Ind.number", "leaf.thick", "leaf.area", "spec.leaf.area", "leaf.dry.mat.cont", "leaf.tissue.dens", "twig.dry.mat.cont", "twig.tis.dens", "bark.thick", "bark.dry.mat.cont", "bark.tis.dens", "stem.dry.mat.cont", "stem.tis.dens", "leaf.C.cont", "leaf.N.cont", "leaf.P.cont", "leaf.C.N.ratio", "leaf.C.P.ratio", "leaf.N.P.ratio", "twig.C.cont", "twig.N.cont", "twig.P.cont", "twig.C.N.ratio", "twig.C.P.ratio", "twig.N.P.ratio", "bark.C.cont", "bark.N.cont", "bark.P.cont", "bark.C.N.ratio", "bark.C.P.ratio", "bark.N.P.ratio", "stem.C.content","stem.N.cont", "stem.P.cont", "stem.C.N.ratio", "stem.C.P.ratio", "stem.N.P.ratio")
+
+
+for (var in responses) {
+
+    # Check first if variable exists in the dataset
+    if (!(var %in% names(foret))) {
+        cat("\nSkipping", var, "-- variable not found in dataset.\n")
+        next
+    }
+
+    # Model 1: Species + Forest Type
+    formula1 <- as.formula(paste(var, "~ Species + For.type"))
+    model1 <- try(aov(formula1, data = foret), silent = TRUE)
+
+    # Model 2: Genus + Forest Type
+    formula2 <- as.formula(paste(var, "~ genus + For.type"))
+    model2 <- try(aov(formula2, data = foret), silent = TRUE)
+
+    cat("\n==========================================\n")
+    cat("ANOVA Results for:", var, "\n")
+    cat("==========================================\n")
+
+    # Print Model 1
+    cat("\n📌 Model 1: Species + For.type\n")
+    if (inherits(model1, "try-error")) {
+        cat("ERROR for Model 1:", var, "\n")
+    } else {
+        print(summary(model1))
+    }
+
+    # Print Model 2
+    cat("\n📌 Model 2: genus + For.type\n")
+    if (inherits(model2, "try-error")) {
+        cat("ERROR for Model 2:", var, "\n")
+    } else {
+        print(summary(model2))
+    }
+}
+
+
+
+```
 
