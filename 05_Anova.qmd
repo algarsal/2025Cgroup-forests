@@ -12,7 +12,7 @@ load("Data/foret.Rdata")
 
 
 ```{r}
-#Anova
+#Anova for species and genus 
 aov2 <- aov(leaf.thick~For.type+Species, data = foret)
 aov3 <- aov(leaf.thick~For.type+genus, data = foret)
 summary(aov2)
