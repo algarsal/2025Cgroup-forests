@@ -27,7 +27,13 @@ names(d1) <- new.name
 foret <- d1
 save(foret, orig.name, l,
      file = "Data/foret.Rdata")
-write.csv(d, file = "Data/foret.csv" )a
+write.csv(d, file = "Data/foret.csv" )
 
+#Extract Genus
 
+library(stringr)
+
+foret$genus <- word(foret$Species, 1)
+
+#Load the data
 load("Data/foret.Rdata")
