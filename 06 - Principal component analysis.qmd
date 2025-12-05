@@ -26,7 +26,14 @@ summary(foret)
 
 # The pacakages should  be installed for running the PCA design plot
 
-#install.packages(c("FactoMineR", ""))
+#install.packages("FactoMineR")
+#install.packages("factoextra")
+
+#library(FactoMineR)
+#library(factoextra)
+
+res <- PCA(foret_active, scale.unit = TRUE, graph = FALSE)
+
 ```
 
 ```{r}
