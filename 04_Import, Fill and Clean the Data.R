@@ -30,6 +30,7 @@ save(foret, orig.name, l,
 write.csv(d, file = "Data/foret.csv" )
 #clean the data
 #clean the data
+#clean the data
 foret$bark.thick[221:225] <- 0
 foret$bark.thick[401:402] <- 0
 foret$bark.thick[411] <- 0
