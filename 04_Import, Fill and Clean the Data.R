@@ -30,7 +30,6 @@ save(foret, orig.name, l,
 write.csv(d, file = "Data/foret.csv" )
 #clean the data
 #clean the data
-#clean the data
 foret$bark.thick[221:225] <- 0
 foret$bark.thick[401:402] <- 0
 foret$bark.thick[411] <- 0
@@ -95,6 +94,5 @@ foret$stem.P.cont[293:295] <- 0
 foret$stem.C.N.ratio[293:295] <- 0
 foret$stem.C.P.ratio[293:295] <- 0
 foret$stem.N.P.ratio[293:295] <- 0
-
 #Load the data
 load("Data/foret.Rdata")
