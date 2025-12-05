@@ -23,6 +23,9 @@ summary(foret)
 ```
 
 ```{r}
+
+# The pacakages should  be installed for running the PCA design plot
+
 #install.packages(c("FactoMineR", ""))
 ```
 
@@ -37,6 +40,9 @@ biplot(pca_base, cex = c(0.8, 1.2))
 ```
 
 ```{r}
+
+# The libararies  are to be loaded for running the PCA design plot
+
 #library(FactoMineR)
 #library(factoextra)
 
@@ -121,6 +127,7 @@ fviz_pca_biplot(res.pca,
 
 
 ```{r}
+  # Line to remove the legend of the genus
 
 
     res.pca <- prcomp(foret[, 3:10], scale. = TRUE) # Corrected scale argument to scale.
@@ -136,7 +143,9 @@ fviz_pca_biplot(res.pca,
                 repel = TRUE,
                 ggtheme = theme_minimal()
 ) +
+
   # 🎯 Add this line to remove the legend!
+
   ggplot2::theme(legend.position = "none")        
                 
 
