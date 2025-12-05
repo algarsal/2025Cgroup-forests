@@ -21,6 +21,10 @@ orig.name <- c('Forest type', 'Species', 'Individual number', 'LT (mm)', 'LA (cm
 
 new.name <- c('For.type', 'Species', 'Ind.number', 'leaf.thick', 'leaf.area', 'spec.leaf.area', 'leaf.dry.mat.cont', 'leaf.tissue.dens', 'twig.dry.mat.cont', 'twig.tis.dens', 'bark.thick', 'bark.dry.mat.cont', 'bark.tis.dens', 'stem.dry.mat.cont', 'stem.tis.dens', 'leaf.C.cont', 'leaf.N.cont', 'leaf.P.cont;', 'leaf.C.N.ratio', 'leaf.C.P.ratio', 'leaf.N.P.ratio', 'twig.C.cont', 'twig.N.cont', 'twig.P.cont', 'twig.C.N.ratio', 'twig.C.P.ratio', 'twig.N.P.ratio', 'bark.C.cont', 'bark.N.cont', 'bark.P.cont', 'bark.C.N.ratio', 'bark.C.P.ratio', 'bark.N.P.ratio', 'stem.C.content','stem.N.cont', 'stem.P.cont', 'stem.C.N.ratio', 'stem.C.P.ratio', 'stem.N.P.ratio')
 
+#Add Genus Data
+library(stringr)
+foret$genus <- word(foret$Species, 1)
+
 #Save the data
 
 names(d1) <- new.name
@@ -28,7 +32,7 @@ foret <- d1
 save(foret, orig.name, l,
      file = "Data/foret.Rdata")
 write.csv(d, file = "Data/foret.csv" )
-#clean the data
+
 #clean the data
 foret$bark.thick[221:225] <- 0
 foret$bark.thick[401:402] <- 0
@@ -94,5 +98,6 @@ foret$stem.P.cont[293:295] <- 0
 foret$stem.C.N.ratio[293:295] <- 0
 foret$stem.C.P.ratio[293:295] <- 0
 foret$stem.N.P.ratio[293:295] <- 0
+
 #Load the data
 load("Data/foret.Rdata")
