@@ -93,11 +93,12 @@ foret$genus <- word(foret$Species, 1)
 # foret$stem.N.P.ratio[293:295] <- 0
 
 #Change to Numeric data
-foret[-c(1,2,20)] <- sapply(foret[-c(1,2,20)],as.numeric)
+n <- which(names(foret)== "genus")
+foret[-c(1,2,n)] <- sapply(foret[-c(1,2,n)],as.numeric)
 
 
 #Clean real data 
-# is.na(foret$bark.thick)
+#is.na(foret$bark.thick)
 foret.c <- na.exclude(foret)
 
 
