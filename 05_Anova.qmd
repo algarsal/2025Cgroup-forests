@@ -7,6 +7,10 @@ format: html
 load("Data/foret.Rdata")
  
 library(stringr)
+foret.c$genus <- word(foret.c$Species, 1)
+
+#Add Genus Data
+library(stringr)
 foret$genus <- word(foret$Species, 1)
 
 ```
@@ -16,8 +20,8 @@ foret$genus <- word(foret$Species, 1)
 
 ```{r}
 #ANOVA for species and genus 
-aov2 <- aov(leaf.thick~For.type+Species, data = foret)
-aov3 <- aov(leaf.thick~For.type+genus, data = foret)
+aov2 <- aov(leaf.thick~For.type+Species, data = foret.c)
+aov3 <- aov(leaf.thick~For.type+genus, data = foret.c)
 summary(aov2)
 summary(aov3)
 
@@ -33,32 +37,13 @@ BIC(aov2,aov3)
 #For loop for ANOVA
 
 responses <- c("For.type", "Species", "Ind.number", "leaf.thick", "leaf.area", "spec.leaf.area", "leaf.dry.mat.cont", "leaf.tissue.dens", "twig.dry.mat.cont", "twig.tis.dens", "bark.thick", "bark.dry.mat.cont", "bark.tis.dens", "stem.dry.mat.cont", "stem.tis.dens", "leaf.C.cont", "leaf.N.cont", "leaf.P.cont", "leaf.C.N.ratio", "leaf.C.P.ratio", "leaf.N.P.ratio", "twig.C.cont", "twig.N.cont", "twig.P.cont", "twig.C.N.ratio", "twig.C.P.ratio", "twig.N.P.ratio", "bark.C.cont", "bark.N.cont", "bark.P.cont", "bark.C.N.ratio", "bark.C.P.ratio", "bark.N.P.ratio", "stem.C.content","stem.N.cont", "stem.P.cont", "stem.C.N.ratio", "stem.C.P.ratio", "stem.N.P.ratio")
-# Check for NAs
-sapply(foret, function(x) sum(is.na(x)))
 
-# Check for Inf or NaN
-sapply(foret, function(x) sum(!is.finite(x)))
-
-#Option 1: remove rows with NA in the specific variable
-foret_clean <- foret[!is.na(foret$leaf.thick), ]
-
-# Option 2: remove rows with NA in any of the dependent variables
-foret_clean <- foret[complete.cases(foret[, responses]), ]
-
-# Check for NAs
-sapply(foret, function(x) sum(is.na(x)))
-
-# Check for Inf or NaN
-sapply(foret, function(x) sum(!is.finite(x)))
-
-#Option 1: remove rows with NA in the specific variable
-foret_clean <- foret[!is.na(foret$leaf.thick), ]
 
 #Option 2: remove rows with NA in any of the dependent variables
-foret_clean <- foret[complete.cases(foret[, responses]), ]
+foret_clean <- foret.c[complete.cases(foret.c[, responses]), ]
 
 
-aov2 <- aov(leaf.thick ~ For.type + Species, data = foret_clean )
+aov2 <- aov(leaf.thick ~ For.type + Species, data = foret.c )
 summary(aov2)
 
 
@@ -73,7 +58,7 @@ results <- data.frame(
 for (var in responses) {
 
     # Check first if variable exists in the dataset
-    if (!(var %in% names(foret_clean))) { # Using foret_clean is better here
+    if (!(var %in% names(foret.c))) { # Using foret_clean is better here
         cat("\nSkipping", var, "-- variable not found in dataset.\n")
         next
     }
@@ -81,12 +66,12 @@ for (var in responses) {
     # Model 1: Species + Forest Type
     formula1 <- as.formula(paste(var, "~ Species + For.type"))
     # *** FIX HERE: Change 'foret' to 'foret_clean' ***
-    model1 <- try(aov(formula1, data = foret_clean), silent = TRUE) 
+    model1 <- try(aov(formula1, data = foret.c), silent = TRUE) 
 
     # Model 2: Genus + Forest Type
     formula2 <- as.formula(paste(var, "~ genus + For.type"))
     # *** FIX HERE: Change 'foret' to 'foret_clean' ***
-    model2 <- try(aov(formula2, data = foret_clean), silent = TRUE) 
+    model2 <- try(aov(formula2, data = foret.c), silent = TRUE) 
 
     cat("\n==========================================\n")
     cat("ANOVA Results for:", var, "\n")
@@ -122,6 +107,35 @@ Table.aov1.aov2 <- data.frame(
   P_value_genus = NA
 )
 
+# List all trait columns (numeric variables)
+trait_cols <- names(foret)[sapply(foret, is.numeric)]
+
+# Create empty dataframe
+p_table <- data.frame(
+  Trait = trait_cols,
+  P_value_species = NA,
+  P_value_genus = NA
+)
+
+# Loop through traits
+for (i in seq_along(trait_cols)) {
+  trait <- trait_cols[i]
+  
+  # ANOVA for species
+  model_species <- aov(foret[[trait]] ~ Species, data = foret)
+  p_species <- summary(model_species)[[1]][["Pr(>F)"]][1]
+  
+  # ANOVA for genus
+  model_genus <- aov(foret[[trait]] ~ genus, data = foret)
+  p_genus <- summary(model_genus)[[1]][["Pr(>F)"]][1]
+  
+  # Save into table
+  p_table$P_value_species[i] <- p_species
+  p_table$P_value_genus[i] <- p_genus
+}
+
+# Print table
+p_table
 
 ```
 
