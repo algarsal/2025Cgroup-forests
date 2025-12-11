@@ -143,6 +143,8 @@ All variables have significant differences between forest types (see @tbl-anova)
 
 library(knitr)
 p_table$P_value_species <- as.character(p_table$P_value_species)
+p_table$P_value_genus <- as.character(p_table$P_value_genus)
+
 kable(p_table)
 
 
