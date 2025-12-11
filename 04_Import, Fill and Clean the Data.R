@@ -21,6 +21,8 @@ orig.name <- c('Forest type', 'Species', 'Individual number', 'LT (mm)', 'LA (cm
 
 new.name <- c('For.type', 'Species', 'Ind.number', 'leaf.thick', 'leaf.area', 'spec.leaf.area', 'leaf.dry.mat.cont', 'leaf.tissue.dens', 'twig.dry.mat.cont', 'twig.tis.dens', 'bark.thick', 'bark.dry.mat.cont', 'bark.tis.dens', 'stem.dry.mat.cont', 'stem.tis.dens', 'leaf.C.cont', 'leaf.N.cont', 'leaf.P.cont', 'leaf.C.N.ratio', 'leaf.C.P.ratio', 'leaf.N.P.ratio', 'twig.C.cont', 'twig.N.cont', 'twig.P.cont', 'twig.C.N.ratio', 'twig.C.P.ratio', 'twig.N.P.ratio', 'bark.C.cont', 'bark.N.cont', 'bark.P.cont', 'bark.C.N.ratio', 'bark.C.P.ratio', 'bark.N.P.ratio', 'stem.C.content','stem.N.cont', 'stem.P.cont', 'stem.C.N.ratio', 'stem.C.P.ratio', 'stem.N.P.ratio')
 
+names(foret) <- new.name
+
 #Add Genus Data
 library(stringr)
 foret$genus <- word(foret$Species, 1)
@@ -104,7 +106,6 @@ foret.c <- na.exclude(foret)
 
 #Save the data
 
-names(foret.c) <- new.name
 foret <- foret.c
 save(foret, orig.name, l,
      file = "Data/foret.Rdata")
