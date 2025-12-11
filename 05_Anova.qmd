@@ -6,13 +6,6 @@ format: html
 ```{r}
 load("Data/foret.Rdata")
  
-library(stringr)
-foret.c$genus <- word(foret.c$Species, 1)
-
-#Add Genus Data
-library(stringr)
-foret$genus <- word(foret$Species, 1)
-
 ```
 
 
@@ -20,8 +13,8 @@ foret$genus <- word(foret$Species, 1)
 
 ```{r}
 #ANOVA for species and genus 
-aov2 <- aov(leaf.thick~For.type+Species, data = foret.c)
-aov3 <- aov(leaf.thick~For.type+genus, data = foret.c)
+aov2 <- aov(leaf.thick~For.type+Species, data = foret)
+aov3 <- aov(leaf.thick~For.type+genus, data = foret)
 summary(aov2)
 summary(aov3)
 
@@ -40,10 +33,10 @@ responses <- c("For.type", "Species", "Ind.number", "leaf.thick", "leaf.area", "
 
 
 #Option 2: remove rows with NA in any of the dependent variables
-foret_clean <- foret.c[complete.cases(foret.c[, responses]), ]
+foret_clean <- foret[complete.cases(foret[, responses]), ]
 
 
-aov2 <- aov(leaf.thick ~ For.type + Species, data = foret.c )
+aov2 <- aov(leaf.thick ~ For.type + Species, data = foret )
 summary(aov2)
 
 
@@ -52,13 +45,16 @@ results <- data.frame(
   P_value_ForType = NA,
   P_value_Species = NA
 )
+```
 
+
+```{r}
 # Corrected lines in the For loop for ANOVA
 
 for (var in responses) {
 
     # Check first if variable exists in the dataset
-    if (!(var %in% names(foret.c))) { # Using foret_clean is better here
+    if (!(var %in% names(foret))) { # Using foret_clean is better here
         cat("\nSkipping", var, "-- variable not found in dataset.\n")
         next
     }
@@ -66,12 +62,12 @@ for (var in responses) {
     # Model 1: Species + Forest Type
     formula1 <- as.formula(paste(var, "~ Species + For.type"))
     # *** FIX HERE: Change 'foret' to 'foret_clean' ***
-    model1 <- try(aov(formula1, data = foret.c), silent = TRUE) 
+    model1 <- try(aov(formula1, data = foret), silent = TRUE) 
 
     # Model 2: Genus + Forest Type
     formula2 <- as.formula(paste(var, "~ genus + For.type"))
     # *** FIX HERE: Change 'foret' to 'foret_clean' ***
-    model2 <- try(aov(formula2, data = foret.c), silent = TRUE) 
+    model2 <- try(aov(formula2, data = foret), silent = TRUE) 
 
     cat("\n==========================================\n")
     cat("ANOVA Results for:", var, "\n")
@@ -118,7 +114,7 @@ p_table <- data.frame(
 )
 
 # Loop through traits
-for (i in seq_along(trait_cols)) {
+for (i in seq_along(trait_cols[-1]) +1) {
   trait <- trait_cols[i]
   
   # ANOVA for species
@@ -136,6 +132,19 @@ for (i in seq_along(trait_cols)) {
 
 # Print table
 p_table
+
+p_table$P_value_genus>0.05
+p_table$P_value_species>0.05
+```
+
+All variables have significant differences between forest types (see @tbl-anova)
+```{r tbl-anova}
+#| tbl-cap: P value for ANOVA
+
+library(knitr)
+p_table$P_value_species <- as.character(p_table$P_value_species)
+kable(p_table)
+
 
 ```
 
