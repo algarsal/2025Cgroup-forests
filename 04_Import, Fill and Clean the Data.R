@@ -11,8 +11,8 @@ l <- l[[1]][1]
 
 #fill the data : Species and Forest type
 # names(d)
-d1 <- fill(d, Species, "Forest type")
-
+foret <- fill(d, Species, "Forest type")
+rm(d)
 #Change the variable names
 
 # names(d)
@@ -25,79 +25,89 @@ new.name <- c('For.type', 'Species', 'Ind.number', 'leaf.thick', 'leaf.area', 's
 library(stringr)
 foret$genus <- word(foret$Species, 1)
 
-#Save the data
-
-names(d1) <- new.name
-foret <- d1
-save(foret, orig.name, l,
-     file = "Data/foret.Rdata")
-write.csv(d, file = "Data/foret.csv" )
 
 #clean the data
-foret$bark.thick[221:225] <- 0
-foret$bark.thick[401:402] <- 0
-foret$bark.thick[411] <- 0
-foret$bark.thick[466:470] <- 0
-foret$bark.thick[486:490] <- 0
+# foret$bark.thick[221:225] <- 0
+# foret$bark.thick[401:402] <- 0
+# foret$bark.thick[411] <- 0
+# foret$bark.thick[466:470] <- 0
+# foret$bark.thick[486:490] <- 0
+# 
+# foret$bark.dry.mat.cont[221:225] <- 0
+# foret$bark.dry.mat.cont[401:402] <- 0
+# foret$bark.dry.mat.cont[411] <- 0
+# foret$bark.dry.mat.cont[466:470] <- 0
+# foret$bark.dry.mat.cont[486:490] <- 0
+# 
+# foret$bark.tis.dens[221:225] <- 0
+# foret$bark.tis.dens[401:402] <- 0
+# foret$bark.tis.dens[411] <- 0
+# foret$bark.tis.dens[466:470] <- 0
+# foret$bark.tis.dens[486:490] <- 0
+# 
+# foret$bark.C.cont[221:225] <- 0
+# foret$bark.C.cont[401:402] <- 0
+# foret$bark.C.cont[411] <- 0
+# foret$bark.C.cont[466:470] <- 0
+# foret$bark.C.cont[486:490] <- 0
+# 
+# foret$bark.N.cont[221:225] <- 0
+# foret$bark.N.cont[401:402] <- 0
+# foret$bark.N.cont[411] <- 0
+# foret$bark.N.cont[466:470] <- 0
+# foret$bark.N.cont[486:490] <- 0
+# 
+# foret$bark.P.cont[221:225] <- 0
+# foret$bark.P.cont[401:402] <- 0
+# foret$bark.P.cont[411] <- 0
+# foret$bark.P.cont[466:470] <- 0
+# foret$bark.P.cont[486:490] <- 0
+# 
+# foret$bark.C.N.ratio[221:225] <- 0
+# foret$bark.C.N.ratio[401:402] <- 0
+# foret$bark.C.N.ratio[411] <- 0
+# foret$bark.C.N.ratio[466:470] <- 0
+# foret$bark.C.N.ratio[486:490] <- 0
+# 
+# foret$bark.C.P.ratio[221:225] <- 0
+# foret$bark.C.P.ratio[401:402] <- 0
+# foret$bark.C.P.ratio[411] <- 0
+# foret$bark.C.P.ratio[466:470] <- 0
+# foret$bark.C.P.ratio[486:490] <- 0
+# 
+# foret$bark.N.P.ratio[221:225] <- 0
+# foret$bark.N.P.ratio[401:402] <- 0
+# foret$bark.N.P.ratio[411] <- 0
+# foret$bark.N.P.ratio[466:470] <- 0
+# foret$bark.N.P.ratio[486:490] <- 0
+# 
+# 
+# foret$stem.dry.mat.cont[293:295] <- 0
+# foret$stem.tis.dens[293:295] <- 0
+# 
+# foret$stem.C.content[293:295] <- 0
+# foret$stem.N.cont[293:295] <- 0
+# foret$stem.P.cont[293:295] <- 0
+# foret$stem.C.N.ratio[293:295] <- 0
+# foret$stem.C.P.ratio[293:295] <- 0
+# foret$stem.N.P.ratio[293:295] <- 0
 
-foret$bark.dry.mat.cont[221:225] <- 0
-foret$bark.dry.mat.cont[401:402] <- 0
-foret$bark.dry.mat.cont[411] <- 0
-foret$bark.dry.mat.cont[466:470] <- 0
-foret$bark.dry.mat.cont[486:490] <- 0
-
-foret$bark.tis.dens[221:225] <- 0
-foret$bark.tis.dens[401:402] <- 0
-foret$bark.tis.dens[411] <- 0
-foret$bark.tis.dens[466:470] <- 0
-foret$bark.tis.dens[486:490] <- 0
-
-foret$bark.C.cont[221:225] <- 0
-foret$bark.C.cont[401:402] <- 0
-foret$bark.C.cont[411] <- 0
-foret$bark.C.cont[466:470] <- 0
-foret$bark.C.cont[486:490] <- 0
-
-foret$bark.N.cont[221:225] <- 0
-foret$bark.N.cont[401:402] <- 0
-foret$bark.N.cont[411] <- 0
-foret$bark.N.cont[466:470] <- 0
-foret$bark.N.cont[486:490] <- 0
-
-foret$bark.P.cont[221:225] <- 0
-foret$bark.P.cont[401:402] <- 0
-foret$bark.P.cont[411] <- 0
-foret$bark.P.cont[466:470] <- 0
-foret$bark.P.cont[486:490] <- 0
-
-foret$bark.C.N.ratio[221:225] <- 0
-foret$bark.C.N.ratio[401:402] <- 0
-foret$bark.C.N.ratio[411] <- 0
-foret$bark.C.N.ratio[466:470] <- 0
-foret$bark.C.N.ratio[486:490] <- 0
-
-foret$bark.C.P.ratio[221:225] <- 0
-foret$bark.C.P.ratio[401:402] <- 0
-foret$bark.C.P.ratio[411] <- 0
-foret$bark.C.P.ratio[466:470] <- 0
-foret$bark.C.P.ratio[486:490] <- 0
-
-foret$bark.N.P.ratio[221:225] <- 0
-foret$bark.N.P.ratio[401:402] <- 0
-foret$bark.N.P.ratio[411] <- 0
-foret$bark.N.P.ratio[466:470] <- 0
-foret$bark.N.P.ratio[486:490] <- 0
+#Change to Numeric data
+foret[-c(1,2,20)] <- sapply(foret[-c(1,2,20)],as.numeric)
 
 
-foret$stem.dry.mat.cont[293:295] <- 0
-foret$stem.tis.dens[293:295] <- 0
+#Clean real data 
+# is.na(foret$bark.thick)
+foret.c <- na.exclude(foret)
 
-foret$stem.C.content[293:295] <- 0
-foret$stem.N.cont[293:295] <- 0
-foret$stem.P.cont[293:295] <- 0
-foret$stem.C.N.ratio[293:295] <- 0
-foret$stem.C.P.ratio[293:295] <- 0
-foret$stem.N.P.ratio[293:295] <- 0
+
+#Save the data
+
+names(foret.c) <- new.name
+foret <- foret.c
+save(foret, orig.name, l,
+     file = "Data/foret.Rdata")
+write.csv(foret, file = "Data/foret.csv" )
 
 #Load the data
 load("Data/foret.Rdata")
