@@ -1,6 +1,7 @@
 # Keep only numeric variables from your dataset
-numeric_vars <- sapply(data, is.numeric)
-data_numeric <- data[, numeric_vars]
+load("data/foret.Rdata")
+numeric_vars <- sapply(foret, is.numeric)
+data_numeric <- foret[, numeric_vars]
 
 # Check the first few rows
 head(data_numeric)
@@ -11,4 +12,16 @@ cor_matrix
 
 
 heatmap(cor_matrix, symm = TRUE, main = "Correlation Heatmap")
+
+#Correlation between the traits
+
+library(GGally)
+ggpairs(foret, columns = 6:10, 
+        aes(color = For.type),
+        upper = list(
+          continuous = wrap("cor", size = 4)),
+        lower = list(
+          continuous = wrap("smooth", 
+                            alpha = 0.3, size = 0.5))) +
+  theme_minimal()
 
