@@ -113,3 +113,4 @@ write.csv(foret, file = "Data/foret.csv" )
 
 #Load the data
 load("Data/foret.Rdata")
+
