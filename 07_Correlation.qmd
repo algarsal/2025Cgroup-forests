@@ -1,0 +1,365 @@
+---
+title: "07_correlation"
+format: html
+editor: visual
+---
+
+```{r}
+library(GGally)
+ggpairs(foret, columns = 6:10,
+        aes(color = For.type),
+        upper = list(
+          continuous = wrap("cor", size = 4)),
+        lower = list(
+          continuous = wrap("smooth", 
+                            alpha = 0.3, size = 0.5))) +
+  theme_minimal()
+
+# Keep only numeric variables from your dataset
+load("data/foret.Rdata")
+numeric_vars <- sapply(foret, is.numeric)
+data_numeric <- foret[, numeric_vars]
+
+# Check the first few rows
+head(data_numeric)
+
+
+cor_matrix <- cor(data_numeric, use = "pairwise.complete.obs")
+cor_matrix
+
+
+heatmap(cor_matrix, symm = TRUE, main = "Correlation Heatmap")
+
+```
+
+## 1. What this figure shows
+
+This figure presents a Pearson correlation heatmap among multiple plant functional traits (leaf, twig, stem, and bark traits).\
+The color scale reflects the strength and direction of correlations:
+
+-   **Dark red** → strong positive correlation\
+-   **Light yellow/orange** → weak or no correlation
+
+The dendrograms (top and left) result from hierarchical clustering, grouping traits that covary similarly across species.
+
+------------------------------------------------------------------------
+
+## 2. Main trait clusters (biological interpretation)
+
+### 🔹 Cluster 1 — Leaf nutrient economics
+
+**Includes:** - Leaf P content\
+- Leaf N:P ratio\
+- Leaf C:N ratio\
+- Leaf C content\
+- Specific leaf area (SLA)
+
+**Interpretation:**\
+This cluster represents the Leaf Economics Spectrum (LES). High SLA and nutrient-rich leaves are associated with fast resource acquisition, whereas high C:N and C:P ratios indicate conservative strategies.
+
+------------------------------------------------------------------------
+
+### 🔹 Cluster 2 — Twig and stem nutrient traits
+
+**Includes:** - Twig N content\
+- Twig P content\
+- Stem N content\
+- Stem P content
+
+**Interpretation:**\
+Nutrient concentrations in woody organs are strongly coordinated, indicating a whole-plant nutrient allocation strategy rather than organ-specific control.
+
+------------------------------------------------------------------------
+
+### 🔹 Cluster 3 — Stoichiometric ratios (C:N, C:P, N:P)
+
+**Includes:** - Twig C:N and C:P ratios\
+- Stem C:N and C:P ratios
+
+**Interpretation:**\
+Stoichiometric ratios cluster together across organs, showing that nutrient limitation signals (N vs P limitation) are consistent at the whole-plant level.
+
+------------------------------------------------------------------------
+
+### 🔹 Cluster 4 — Structural investment traits
+
+**Includes:** - Leaf dry matter content\
+- Twig dry matter content\
+- Bark dry matter content\
+- Bark thickness
+
+**Interpretation:**\
+These traits describe carbon allocation to structure and defense, reflecting slow-growth, stress-tolerant strategies.
+
+------------------------------------------------------------------------
+
+## 3. Cross-organ coordination
+
+-   Leaf, twig, stem, and bark traits do not form isolated groups.\
+-   Instead, traits cluster by function (nutrient economy vs structural investment) rather than by organ.
+
+**This indicates integrated plant strategies rather than independent organ behavior.**
+
+------------------------------------------------------------------------
+
+## 4. Key ecological message
+
+The correlation heatmap reveals strong coordination among plant functional traits across organs, structured along two main axes:
+
+1.  **Nutrient acquisition and stoichiometry**\
+2.  **Structural investment and tissue density**
+
+These axes correspond to well-established ecological frameworks such as the Leaf Economics Spectrum and whole-plant resource-use strategies.
+
+------------------------------------------------------------------------
+
+```{r}
+#Correlation between the traits
+
+library(GGally)
+ggpairs(foret, columns = 4:8,
+        aes(color = For.type),
+        upper = list(
+          continuous = wrap("cor", size = 4)),
+        lower = list(
+          continuous = wrap("smooth", 
+                            alpha = 0.3, size = 0.5))) +
+  theme_minimal()
+
+library(GGally)
+ggpairs(foret, columns = 9:13,
+        aes(color = For.type),
+        upper = list(
+          continuous = wrap("cor", size = 4)),
+        lower = list(
+          continuous = wrap("smooth", 
+                            alpha = 0.3, size = 0.5))) +
+  theme_minimal()
+
+library(GGally)
+ggpairs(foret, columns = 14:18,
+        aes(color = For.type),
+        upper = list(
+          continuous = wrap("cor", size = 4)),
+        lower = list(
+          continuous = wrap("smooth", 
+                            alpha = 0.3, size = 0.5))) +
+  theme_minimal()
+
+library(GGally)
+ggpairs(foret, columns = 19:23,
+        aes(color = For.type),
+        upper = list(
+          continuous = wrap("cor", size = 4)),
+        lower = list(
+          continuous = wrap("smooth", 
+                            alpha = 0.3, size = 0.5))) +
+  theme_minimal()
+
+library(GGally)
+ggpairs(foret, columns = 24:28,
+        aes(color = For.type),
+        upper = list(
+          continuous = wrap("cor", size = 4)),
+        lower = list(
+          continuous = wrap("smooth", 
+                            alpha = 0.3, size = 0.5))) +
+  theme_minimal()
+
+library(GGally)
+ggpairs(foret, columns = 29:33,
+        aes(color = For.type),
+        upper = list(
+          continuous = wrap("cor", size = 4)),
+        lower = list(
+          continuous = wrap("smooth", 
+                            alpha = 0.3, size = 0.5))) +
+  theme_minimal()
+
+library(GGally)
+ggpairs(foret, columns = 34:39,
+        aes(color = For.type),
+        upper = list(
+          continuous = wrap("cor", size = 4)),
+        lower = list(
+          continuous = wrap("smooth", 
+                            alpha = 0.3, size = 0.5))) +
+  theme_minimal()
+
+
+```
+
+## Figure 1 — Stem & Leaf nutrient concentrations and tissue density
+
+These figures are pairwise trait‐correlation matrices, split by plant organ (leaf, twig, bark, stem) and forest type (colors: typically conserved vs disturbed forests). Each panel shows:
+
+-   Diagonal: trait distributions (density plots) for the two forest types\
+-   Lower triangle: scatterplots + fitted trend (separate by forest type)\
+-   Upper triangle: Pearson correlation (r) with significance (*, **,*** )\
+-   Colored text = correlations within each forest type
+
+### Main patterns
+
+1.  Stem dry matter content ↔ stem tissue density
+    -   Strong positive correlation (r ≈ 0.81)\
+    -   Interpretation: denser stems have more dry matter → structural investment strategy
+2.  Leaf N ↔ Leaf P content
+    -   Very strong positive correlation (r ≈ 0.82)\
+    -   Classic leaf economics spectrum: nutrient-rich leaves are coordinated
+3.  Leaf C vs N/P
+    -   Weak to moderately negative correlations\
+    -   Carbon-rich leaves tend to be nutrient poorer, reflecting trade-off between structure and metabolism
+4.  Forest-type effect
+    -   Disturbed forests often show slightly higher nutrient concentrations and wider distributions\
+    -   Suggests faster-growth strategies under disturbance
+
+### Ecological takeaway
+
+Stem traits reflect mechanical strategy, leaf traits reflect metabolic strategy, and these are only weakly coupled.
+
+------------------------------------------------------------------------
+
+## Figure 2 — Twig & Bark physical traits
+
+### Main patterns
+
+1.  Twig dry matter ↔ twig tissue density
+    -   Strong positive (r ≈ 0.65)\
+    -   Denser twigs = more conservative growth
+2.  Bark thickness ↔ bark density
+    -   Moderate negative correlation\
+    -   Thick bark tends to be less dense, typical of fire or disturbance protection strategies
+3.  Twig traits ↔ bark traits
+    -   Generally positive correlations\
+    -   Indicates whole-plant structural coordination
+4.  Forest differences
+    -   Disturbed forests show higher variance and steeper slopes\
+    -   Indicates trait plasticity under stress/disturbance
+
+### Ecological takeaway
+
+Twig and bark traits scale together as part of a defensive/structural syndrome, especially important under disturbance.
+
+------------------------------------------------------------------------
+
+## Figure 3 — Twig nutrient content & stoichiometry
+
+### Main patterns
+
+1.  Twig P content ↔ C:P ratio
+    -   Strong negative correlation (r ≈ −0.76)\
+    -   Mathematical + biological: more P → lower C:P → higher nutrient availability
+2.  C:N ↔ C:P ratios
+    -   Positive correlation\
+    -   Species with conservative nutrient use are conservative across elements
+3.  N:P ratio ↔ C:N / C:P
+    -   Negative correlations\
+    -   Reflects nutrient limitation gradients (N vs P limitation)
+4.  Bark C content
+    -   Weak correlations → bark is more structural & inert
+
+### Ecological takeaway
+
+Twig chemistry strongly reflects nutrient limitation strategies, while bark chemistry is relatively decoupled.
+
+------------------------------------------------------------------------
+
+## Figure 4 — Leaf stoichiometry & twig nutrients
+
+### Main patterns
+
+1.  Leaf C:N ↔ leaf C:P
+    -   Very strong positive (r ≈ 0.81)\
+    -   Strongly coordinated nutrient economics
+2.  Leaf N:P ↔ leaf C:P
+    -   Positive → confirms P limitation signal
+3.  Twig N ↔ leaf N:P
+    -   Negative correlation\
+    -   Higher twig N corresponds to less P limitation in leaves
+4.  Forest differences
+    -   Disturbed forests cluster toward lower C:N and C:P\
+    -   Indicates acquisitive nutrient strategy
+
+### Ecological takeaway
+
+Leaves are the best indicators of nutrient limitation and productivity strategy.
+
+------------------------------------------------------------------------
+
+## Figure 5 — Leaf morphology & economics
+
+### Main patterns
+
+1.  Specific leaf area (SLA) ↔ leaf dry matter content
+    -   Strong negative correlation (r ≈ −0.67)\
+    -   Core Leaf Economics Spectrum
+2.  Leaf area ↔ SLA
+    -   Positive correlation\
+    -   Large leaves tend to be thinner and resource-acquisitive
+3.  Leaf thickness ↔ tissue density
+    -   Positive but weaker\
+    -   Two independent ways to increase structural investment
+4.  Forest differences
+    -   Disturbed forests show higher SLA and lower tissue density\
+    -   Indicates fast-growth, short-lived leaves
+
+### Ecological takeaway
+
+This figure perfectly captures the fast–slow leaf economics axis.
+
+------------------------------------------------------------------------
+
+## Figure 6 — Bark nutrient stoichiometry
+
+### Main patterns
+
+1.  Bark N ↔ bark P
+    -   Moderate positive correlation\
+    -   Coordinated nutrient storage
+2.  C:N & C:P ratios ↔ N/P contents
+    -   Strong negative correlations\
+    -   Stoichiometry dominated by nutrient dilution
+3.  N:P ratio ↔ C:P ratio
+    -   Strong positive (r ≈ 0.74)\
+    -   Indicates P limitation signal even in bark
+4.  Forest-type effect
+    -   Disturbed forests tend to lower C:N and C:P\
+    -   More nutrient-rich bark
+
+### Ecological takeaway
+
+Bark, though structural, still reflects long-term nutrient strategy.
+
+------------------------------------------------------------------------
+
+## Figure 7 — Stem nutrient content & stoichiometry
+
+### Main patterns
+
+1.  Stem N ↔ stem P
+    -   Strong positive (r ≈ 0.44)\
+    -   Coordinated nutrient allocation
+2.  Stem C:N ↔ stem N content
+    -   Strong negative (r ≈ −0.90)\
+    -   Carbon dilution effect
+3.  C:P ↔ N:P ratios
+    -   Strong positive\
+    -   Reflects integrated nutrient limitation
+4.  Forest differences
+    -   Disturbed forests show higher nutrient contents and lower stoichiometric ratios
+
+### Ecological takeaway
+
+Stem chemistry integrates long-term nutrient availability and growth strategy.
+
+------------------------------------------------------------------------
+
+## BIG PICTURE
+
+Traits cluster into three coordinated axes:
+
+1\. Structural investment (density, dry matter)\
+2. Nutrient economics (N, P, stoichiometry)\
+3. Growth strategy (SLA, leaf area)
+
+Disturbed forests consistently show higher nutrient contents, lower C:N and C:P ratios, and higher SLA → faster, more acquisitive strategies.
