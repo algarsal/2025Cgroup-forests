@@ -16,7 +16,7 @@ heatmap(cor_matrix, symm = TRUE, main = "Correlation Heatmap")
 #Correlation between the traits
 
 library(GGally)
-ggpairs(foret, columns = 6:10,
+ggpairs(foret, columns = 4:8,
         aes(color = For.type),
         upper = list(
           continuous = wrap("cor", size = 4)),
