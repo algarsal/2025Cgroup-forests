@@ -1,0 +1,106 @@
+---
+title: "08-Discriminant analysis"
+format: html
+editor: visual
+---
+
+```{r library load}
+# Load the MASS package for LDA
+library(MASS)
+library(ggplot2)
+library(dplyr)
+
+```
+
+```{r LDA Analysis}
+# --- 2. Run the LDA Model ---
+# This fixes the 'argument "x" is missing' error
+lda_model <- lda(
+  formula = lda_formula, 
+  data = lda_data_clean
+)
+
+print(lda_model)
+```
+
+```{r data preparation}
+
+# --- 3. Prepare Data for Visualization ---
+
+# Predict the Linear Discriminants (LDs)
+lda_predict <- predict(lda_model, lda_data_clean)
+
+# Combine the LD scores and the original grouping variable
+lda_plot_data <- data.frame(
+  Group = lda_data_clean[[group_variable_name]], 
+  LD1 = lda_predict$x[,1] )
+# Recalculate intercepts for the vertical lines in the density plot
+# This calculates the mean LD1 score for each group.
+group_means_ld1 <- as.data.frame(lda_model$means %*% lda_model$scaling[,1])
+names(group_means_ld1) <- "LD1_Mean"
+group_means_ld1$Group <- rownames(group_means_ld1)
+
+```
+
+
+
+
+
+```{r LDA Analysis Visualization }
+print(
+  ggplot(lda_plot_data, aes(x = LD1, fill = Group)) +
+    geom_density(alpha = 0.6) +
+    # Use the new, clean data frame for the vertical lines (THE FIX)
+    geom_vline(
+      data = group_means_ld1, 
+      aes(xintercept = LD1_Mean, color = Group), 
+      linetype = "dashed",
+      linewidth = 1 # Use linewidth for thickness
+    ) +
+    labs(
+      title = "Distribution of Samples on Linear Discriminant 1 (LD1) by Forest Type",
+      x = "Linear Discriminant 1 Score",
+      y = "Density"
+    ) +
+    theme_minimal()
+)
+
+
+# --- 5. Visualization Option B: Scatter Plot (For 3+ groups) ---
+
+# This runs only if you have more than two groups (i.e., more than one LD)
+if (ncol(lda_predict$x) > 1) {
+  # Add LD2 to the plot data
+  lda_plot_data$LD2 <- lda_predict$x[,2] 
+  
+  # Calculate the group centroids for LD1 and LD2
+  group_centroids_ld12 <- as.data.frame(lda_model$means %*% lda_model$scaling[, 1:2])
+  names(group_centroids_ld12) <- c("LD1", "LD2")
+  group_centroids_ld12$Group <- rownames(group_centroids_ld12)
+  
+  print(
+    ggplot(lda_plot_data, aes(x = LD1, y = LD2, color = Group, fill = Group)) +
+      geom_point(size = 3, alpha = 0.8) +
+      stat_ellipse(geom = "polygon", alpha = 0.2, type = "norm") + # Add confidence ellipses
+      
+      # Add group centroids
+      geom_point(data = group_centroids_ld12, shape = 4, size = 6, stroke = 2, color = "black") + 
+      geom_text(
+        data = group_centroids_ld12, 
+        aes(x = LD1, y = LD2, label = Group), 
+        size = 5, 
+        color = "black", 
+        vjust = -1
+      ) + 
+      
+      labs(
+        title = "LDA Scatter Plot: Group Separation on LD1 vs LD2",
+        x = paste("Linear Discriminant 1 (", round(lda_model$svd[1]^2 / sum(lda_model$svd^2) * 100, 1), "%)", sep=""),
+        y = paste("Linear Discriminant 2 (", round(lda_model$svd[2]^2 / sum(lda_model$svd^2) * 100, 1), "%)", sep="")
+      ) +
+      theme_minimal() +
+      coord_fixed() # Ensures axes are scaled equally
+  )
+}
+```
+
