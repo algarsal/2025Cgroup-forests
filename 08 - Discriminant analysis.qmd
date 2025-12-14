@@ -131,4 +131,4 @@ Samples with a very low LD1 score are almost certainly Conserved forests.
 
 Samples with a very high LD1 score are almost certainly Disturbed forests.
 
-Discriminative Traits: The separation is overwhelmingly driven by a trade-off between bark phosphorus content (favoring Conserved forests) and bark tissue density (favoring Disturbed forests).
+Discriminative Traits: The separation is overwhelmingly driven by a trade-off between bark phosphorus content (favoring Conserved forests) and bark tissue density (favoring Disturbed forests)
