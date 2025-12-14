@@ -11,17 +11,35 @@ library(dplyr)
 
 ```
 
+
 ```{r LDA Analysis}
-#This creates the lda_model object
-lda_model <- lda(
-formula = lda_formula,
-data = lda_data_clean
-)
+# Load the necessary library for LDA
+library(MASS) 
 
-print(lda_model)
-# Predict the Linear Discriminants (LDs) -
-lda_predict <- predict(lda_model, lda_data_clean)
+# --- Data Preparation for LDA ---
 
+# 1. Combine the numerical predictors (foret_active) and the grouping factor (For.type)
+lda_data <- foret_active 
+lda_data$Group <- foret$For.type
+
+# 2. Filter out rows with NA values (missing data)
+# This creates the clean dataset required by the lda() function
+lda_data_complete <- na.omit(lda_data)
+
+# 3. Separate the predictors and the factor variable
+# All columns except the last (Group) are the predictors
+active_vars_complete <- lda_data_complete[, -ncol(lda_data_complete)] 
+# The last column is the grouping factor
+group_var_complete <- lda_data_complete$Group
+
+# --- Performing the LDA ---
+
+# 4. Perform the LDA
+# 'group_var_complete ~ .' predicts the group using all variables in active_vars_complete
+lda_result <- lda(group_var_complete ~ ., data = active_vars_complete)
+
+# 5. View the results
+print(lda_result)
 ```
 
 The Coefficients of Linear Discriminants (LD1)
@@ -29,106 +47,50 @@ The Coefficients of Linear Discriminants (LD1)
 The magnitude and sign of the coefficients tells that:
 
 ·Magnitude (Absolute Value): How important the variable is in separating the groups. Larger absolute values mean the variable is a stronger discriminator.
+The analysis generated one discriminant function, confirming a strong ecological division between the two forest types, primarily driven by a trade-off between Nutrient Acquisition and Structural Investment.
 
-Sign (Positive/Negative): The direction of the relationship. A positive coefficient means that a high value for that trait pushes the sample toward one group (the group with the lower LD score), and a negative coefficient pushes it toward the other (the group with the higher LD score).The most effective features for separating your forest types are:
+Conserved Forests: These samples are positioned on the negative end of LD1. They exhibit a Nutrient-Acquisition Strategy, characterized by higher by higher absolute N:P concentrations and lower C:P
 
-1.  Bark Phosphorus Content (bark.P.cont): This is the single strongest trait distinguishing the two groups. High bark P content is highly characteristic of Conserved forests.
+Disturbed Forests: These samples are positioned on the positive end of LD1. They exhibit a Structural-Investment Strategy, characterized by higher Dry Matter Content and significantly higher C:P
 
-2.Bark Tissue Density (bark.tis.dens): This is the second strongest trait. High bark density is highly characteristic of Disturbed forests.
-
-The LDA confirms that the difference between Conserved and Disturbed forests is primarily driven by a trade-off between nutrient investment (P content), which dominates the conserved group, and structural traits (Tissue Density), which dominates the disturbed group. The other variables play a much smaller, secondary role in the classification.
+Top Discriminatory Traits (LD1 Coefficients)The coefficients of LD1 indicate the relative contribution and direction of each trait to the separation. The ecological differences are overwhelmingly driven by traits related to Phosphorus cycling and Dry Matter Content (DMC) in structural tissues.The five traits with the largest absolute coefficients, and thus the most influential in the discrimination, are: stem.P.cont, bark.dry.mat.cont,twig.dry.mat.cont, stem.dry.mat.cont, bark.P.cont.
 
 ```{r data preparation for visualization}
-# --- 3. Prepare Data for Visualization ---
+# 1. Generate the LDA scores (predictions)
+# This converts the multidimensional data into scores along the single LD1 axis.
+# This assumes 'lda_result' and 'active_vars_complete' are available from the previous step.
+lda_scores <- predict(lda_result, active_vars_complete)$x
 
-# Combine the LD scores and the original grouping variable
+# 2. Create a data frame for plotting
+# We need the LD1 score and the Group variable
 lda_plot_data <- data.frame(
-  Group = lda_data_clean[[group_variable_name]], 
-  LD1 = lda_predict$x[,1] )
-# Recalculate intercepts for the vertical lines in the density plot
-# This calculates the mean LD1 score for each group.
-group_means_ld1 <- as.data.frame(lda_model$means %*% lda_model$scaling[,1])
-names(group_means_ld1) <- "LD1_Mean"
-group_means_ld1$Group <- rownames(group_means_ld1)
-
-```
-
-```{r LDA Analysis Visualization }
-print(
-  ggplot(lda_plot_data, aes(x = LD1, fill = Group)) +
-    geom_density(alpha = 0.6) +
-    # Use the new, clean data frame for the vertical lines (THE FIX)
-    geom_vline(
-      data = group_means_ld1, 
-      aes(xintercept = LD1_Mean, color = Group), 
-      linetype = "dashed",
-      linewidth = 1 # Use linewidth for thickness
-    ) +
-    labs(
-      title = "Distribution of Samples on Linear Discriminant 1 (LD1) by Forest Type",
-      x = "Linear Discriminant 1 Score",
-      y = "Density"
-    ) +
-    theme_minimal()
+  LD1 = lda_scores[, 1],
+  Group = group_var_complete
 )
 
+# 3. Plot the density curves
+fig.cap="Figure 3: Linear Discriminant 1 (LD1) Scores Grouped by Forest Type"
 
-# --- 5. Visualization Option B: Scatter Plot (For 3+ groups) ---
 
-# This runs only if you have more than two groups (i.e., more than one LD)
-if (ncol(lda_predict$x) > 1) {
-  # Add LD2 to the plot data
-  lda_plot_data$LD2 <- lda_predict$x[,2] 
-  
-  # Calculate the group centroids for LD1 and LD2
-  group_centroids_ld12 <- as.data.frame(lda_model$means %*% lda_model$scaling[, 1:2])
-  names(group_centroids_ld12) <- c("LD1", "LD2")
-  group_centroids_ld12$Group <- rownames(group_centroids_ld12)
-  
-  print(
-    ggplot(lda_plot_data, aes(x = LD1, y = LD2, color = Group, fill = Group)) +
-      geom_point(size = 3, alpha = 0.8) +
-      stat_ellipse(geom = "polygon", alpha = 0.2, type = "norm") + # Add confidence ellipses
-      
-      # Add group centroids
-      geom_point(data = group_centroids_ld12, shape = 4, size = 6, stroke = 2, color = "black") + 
-      geom_text(
-        data = group_centroids_ld12, 
-        aes(x = LD1, y = LD2, label = Group), 
-        size = 5, 
-        color = "black", 
-        vjust = -1
-      ) + 
-      
-      labs(
-        title = "LDA Scatter Plot: Group Separation on LD1 vs LD2",
-        x = paste("Linear Discriminant 1 (", round(lda_model$svd[1]^2 / sum(lda_model$svd^2) * 100, 1), "%)", sep=""),
-        y = paste("Linear Discriminant 2 (", round(lda_model$svd[2]^2 / sum(lda_model$svd^2) * 100, 1), "%)", sep="")
-      ) +
-      theme_minimal() +
-      coord_fixed() # Ensures axes are scaled equally
-  )
-}
+ggplot(lda_plot_data, aes(x = LD1, fill = Group)) +
+  # Use geom_density() to show the smooth distribution of scores
+  geom_density(alpha = 0.6) +
+  # Add a vertical line at 0 for reference (the theoretical decision boundary if priors were equal)
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black") +
+  labs(
+    title = "Separation of Forest Types along Linear Discriminant 1",
+    x = "Linear Discriminant 1 (LD1)",
+    y = "Density"
+  ) +
+  # Manually set colors for clarity in the report
+  scale_fill_manual(values = c("Conserved forests" = "#FC4E07", "Disturbed forests" = "#00AFBB")) +
+  theme_minimal()
+
 ```
+The density plot above projects the scores of all individual forest samples onto the single optimal discriminant axis (LD1). The two distributions clearly illustrate the effectiveness of the measured traits in separating the two forest types.
+Excellent Separation: The density curves for "Conserved forests" (orange) and "Disturbed forests" (teal) show a high degree of separation with minimal overlap. This confirms that the combined suite of structural and nutritional traits successfully captures the underlying ecological differences between the two groups.
+Conserved Forests (Orange): The distribution is centered on the negative side of LD1  Mean score approx -1.5. As identified by the negative coefficients in the LDA, this side of the axis is associated with traits like high stem and bark Phosphorus content
 
-2.  Interpretation of the LDA Density Plot (LD1)
-
-Key Observations: Group Means (Vertical Dashed Lines):
-
-The Conserved forests (red) mean is positioned to the left of zero (in the negative score range).
-
-The Disturbed forests (blue) mean is positioned to the right of zero (in the positive score range).
-
-This confirms the LDA successfully created an axis (LD1) that places the mean of the Conserved group at one end and the mean of the Disturbed group at the other.
-
-Overlap and Separation:
-
-High Overlap: There is a substantial region of overlap where the two density curves intersect (roughly between scores -1.0 and 1.5). This indicates that many individual samples, whether Conserved or Disturbed, have very similar trait combinations and would be difficult to classify correctly based on LD1 alone.
-
-Good Separation at Extremes: The LDA does a very good job of identifying the extreme samples. The tails of the distributions (scores below -2.0 and above 2.5) are distinct.
-
-Samples with a very low LD1 score are almost certainly Conserved forests.
-
-Samples with a very high LD1 score are almost certainly Disturbed forests.
-
-Discriminative Traits: The separation is overwhelmingly driven by a trade-off between bark phosphorus content (favoring Conserved forests) and bark tissue density (favoring Disturbed forests).
+Disturbed Forests (Teal): The distribution is centered on the positive side of LD1 (Mean score approx +1.5. This side is associated with positive coefficients for traits like high twig dry matter content 
+```
+      
