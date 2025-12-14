@@ -91,6 +91,30 @@ The density plot above projects the scores of all individual forest samples onto
 Excellent Separation: The density curves for "Conserved forests" (orange) and "Disturbed forests" (teal) show a high degree of separation with minimal overlap. This confirms that the combined suite of structural and nutritional traits successfully captures the underlying ecological differences between the two groups.
 Conserved Forests (Orange): The distribution is centered on the negative side of LD1  Mean score approx -1.5. As identified by the negative coefficients in the LDA, this side of the axis is associated with traits like high stem and bark Phosphorus content
 
+
 Disturbed Forests (Teal): The distribution is centered on the positive side of LD1 (Mean score approx +1.5. This side is associated with positive coefficients for traits like high twig dry matter content 
 ```
       
+
+2.  Interpretation of the LDA Density Plot (LD1)
+
+Key Observations: Group Means (Vertical Dashed Lines):
+
+The Conserved forests (red) mean is positioned to the left of zero (in the negative score range).
+
+The Disturbed forests (blue) mean is positioned to the right of zero (in the positive score range).
+
+This confirms the LDA successfully created an axis (LD1) that places the mean of the Conserved group at one end and the mean of the Disturbed group at the other.
+
+Overlap and Separation:
+
+High Overlap: There is a substantial region of overlap where the two density curves intersect (roughly between scores -1.0 and 1.5). This indicates that many individual samples, whether Conserved or Disturbed, have very similar trait combinations and would be difficult to classify correctly based on LD1 alone.
+
+Good Separation at Extremes: The LDA does a very good job of identifying the extreme samples. The tails of the distributions (scores below -2.0 and above 2.5) are distinct.
+
+Samples with a very low LD1 score are almost certainly Conserved forests.
+
+Samples with a very high LD1 score are almost certainly Disturbed forests.
+
+Discriminative Traits: The separation is overwhelmingly driven by a trade-off between bark phosphorus content (favoring Conserved forests) and bark tissue density (favoring Disturbed forests)
+
