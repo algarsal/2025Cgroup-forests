@@ -3,6 +3,7 @@
 title: "Preliminary results"
 format: html
 editor: visual
+author: "Members: Ahdamson, Ahmed; Eldina, Gresia; Kelly, Ngwankfu; Hejase, Miguel"
 ---
 
 ## Preliminary results Group C
