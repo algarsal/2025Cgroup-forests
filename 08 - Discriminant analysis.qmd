@@ -42,10 +42,6 @@ group_means_ld1$Group <- rownames(group_means_ld1)
 
 ```
 
-
-
-
-
 ```{r LDA Analysis Visualization }
 print(
   ggplot(lda_plot_data, aes(x = LD1, fill = Group)) +
@@ -103,4 +99,3 @@ if (ncol(lda_predict$x) > 1) {
   )
 }
 ```
-
