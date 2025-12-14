@@ -1,0 +1,189 @@
+---
+title: "06 - PRINCIPAL COMPONNET ANALYSIS"
+format: html
+---
+
+```{r load data}
+library(stringr)
+#Load the data
+load("Data/foret.Rdata")
+foret$genus <- word(foret$Species, 1)
+
+
+```
+
+```{r Setup and Data Preparation}
+ls()
+#foret_active <- foret[, c(2:4, 6:10)]
+foret_active <- foret[, sapply(foret, is.numeric)]
+nrow(foret)
+unique(foret$For.type)
+unique(foret$Species)
+
+
+df <- data.frame(
+  other_var = c("a", "b", "c"),
+  bark.thick = as.character(c(1.5, 2.1, 1.8)),
+  bark.dry.mat.cont = as.character(c(0.4, 0.5, 0.3)),
+  stem.tis.dens = as.character(c(0.6, 0.7, 0.5)),
+  stringsAsFactors = FALSE
+)
+
+# A vector containing the names of the columns you want to convert
+my_variables <- c("bark.thick", "bark.dry.mat.cont", "bark.tis.dens", "stem.dry.mat.cont", "stem.tis.dens", "bark.C.cont", "bark.N.cont", "bark.P.cont","bark.C.N.ratio", "bark.C.P.ratio", "bark.N.P.ratio", "stem.C.content","stem.N.cont", "stem.P.cont", "stem.C.P.ratio", "stem.N.P.ratio", "stem.C.N.ratio")
+
+for(i in my_variables){
+  foret[[i ]] <- as.numeric(foret[[i]])
+}
+
+numerical_vars <- names(foret)[sapply(foret, is.numeric)]
+foret$bark.thick <- as.numeric(foret$bark.thick)
+```
+
+```{r PCA packages for anlysis }
+
+#install.packages("FactoMineR")
+#install.packages("factoextra")
+
+library(FactoMineR)
+library(factoextra)
+
+res <- PCA(foret_active, scale.unit = TRUE, graph = FALSE)
+
+```
+
+```{r PCA Scree plot and Variance }
+
+graph = FALSE 
+res.pca <- PCA(foret_active, scale.unit = TRUE, graph = FALSE)
+fviz_eig(res.pca, addlabels = TRUE)
+fviz_pca_var(res.pca)
+fviz_pca_ind(res.pca,
+             geom.ind = "point", # show points only (not text labels)
+             col.ind = "cos2",   # Color by quality of representation
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE)
+```
+1. The Scree Plot shows the Percentage of Explained Variance for the first 10 dimensions (Principal Components). This plot helps us determine how many components are meaningful to retain for further analysis.
+
+Key Observations:PC1 Dominance (Dimension 1): The first component (Dim 1) is the most important, explaining 24.3% of the total variance in the dataset.
+PC2 Contribution (Dimension 2): The second component (Dim 2) is also significant, explaining 14.2% of the variance.Cumulative Variance: Together, PC1 and PC2 explain 24.3 + 14.2 = 38.5% of the total variance.
+The "Elbow": The curve drops steeply from Dim 1 to Dim 2. There is a noticeable "bend" or "elbow" after Dimension 2 or possibly Dimension 3.The drop from Dim 2 (14.2%) to Dim 3 (7.8%) is large. The curve begins to flatten significantly after Dim 3.
+
+2.The variable plot shows the arrows on the two main components, Dim 1 and Dim 2. 
+Length: Longer arrows indicate variables that are better represented by the two dimensions (i.e., the variables are strongly correlated with PC1 or PC2).
+Direction (Grouping): Variables pointing in same direction are positively correlated with each other. Variables pointing in opposite directions are negatively correlated.Projection: The closer an arrow is to an axis, the more that variable contributes to that specific component.
+
+Interpretation of Dimensions:
+Dimension 1 (Dim 1 - Horizontal Axis, 24.3%):
+This axis seems to represent a contrast between physical/structural characteristics and some nutritional ratios.
+
+Positive Side (Right): Variables highly associated with this side include structural/density measures like bark.dry.mat.cont, bark.thick, stem.C.P.ratio, leaf.C.P.ratio, and twig.C.P.ratio. This dimension appears to be a composite of Structural Carbon-to-Nutrient Ratios and Density/Thickness.
+
+Negative Side (Left): Variables on this side are related to concentrations like twig.N.cont, leaf.N.cont, and stem.N.cont. This suggests a factor related to Nitrogen (N) Content or Concentration.
+
+Tentative Name for Dim 1: Structural vs. Nutritional Concentration.
+
+Dimension 2 (Dim 2 - Vertical Axis, 14.2%):
+This axis separates variables related to stem and bark properties from other leaf/twig properties.
+
+Positive Side (Top): Variables pointing up include stem.N.cont, bark.N.cont, twig.tis.dens. This dimension might relate to Stem and Bark Nutrient/Density Properties.
+
+Negative Side (Bottom): Variables pointing down include bark.P.ratio and leaf.P.ratio. This suggests a contrast with some Phosphorus (P) Ratios.
+
+Tentative Name for Dim 2: Stem/Bark Nutrient Density.
+
+```{r  Comparison: Forest Type}
+fig.cap="Figure 1:Biplot Grouped by Forest Type"
+
+res.pca <- prcomp(foret[, 3:10],  scale = TRUE)
+
+
+group_variable <- foret$For.type
+fviz_pca_biplot(res.pca, 
+                # Color individuals by the 'Species' variable
+                habillage = group_variable,
+                addEllipses = TRUE, # Optional: Add ellipses around groups
+                ellipse.level = 0.95, # Optional: Set ellipse confidence level
+                label = "var", # Only label variables (arrows/text)
+                repel = TRUE, # Avoid text overlapping
+                ggtheme = theme_minimal() # Use a clean ggplot theme
+                )
+
+          
+```
+
+3. The Biplot Grouped by Forest Type
+Observation
+Overlap: There is a significant amount of overlap between the two ellipses and the two groups of points. This tells that "Conserved forests" and "Disturbed forests" are not perfectly distinct based.
+
+Separation Along Dim 1 (Horizontal Axis):
+
+The center of the Conserved forests (red ellipse) is shifted slightly to the Left (Negative) side of the Dim 1 axis.
+The center of the Disturbed forests (blue/teal ellipse) is shifted slightly to the Right (Positive) side of the Dim 1 axis.
+
+Separation Along Dim 2 (Vertical Axis):
+There is very little separation between the centers of the two groups along the Dim 2 axis. The two groups share a similar range of scores on this second component.
+
+Conserved Forests (Negative Dim 1): These forests tend to be associated with the variables on the left side of the plot, which you identified as having higher Nitrogen (N) Content or Concentration (twig.N.cont, leaf.N.cont, stem.N.cont, etc.).
+This suggests the trees in conserved forests might have higher overall nutrient concentrations.
+
+Disturbed Forests (Positive Dim 1): These forests tend to be associated with the variables on the right side of the plot, which you identified as representing Structural Carbon-to-Nutrient Ratios and Density/Thickness (bark.dry.mat.cont, leaf.C.P.ratio, etc.).
+This suggests the trees in disturbed forests might prioritize structural traits or have higher C:P ratios, possibly due to nutrient limitation or different growth strategies in a more stressful/disturbed environment.
+
+```{r  Biplot Grouped by Genus}
+fig.cap="Figure 2a: Biplot Grouped by Genus"
+
+res.pca <- prcomp(foret[, 3:10],  scale = TRUE)
+genus_counts <- table(foret$genus)
+valid_genera <- names(genus_counts[genus_counts >= 3])
+foret_filtered <- foret[foret$genus %in% valid_genera, ]
+foretnan_filtered <- foret_filtered[, numerical_vars]
+res.pca_filtered <- prcomp(foretnan_filtered, scale = TRUE) 
+group_variable_filtered <- foret_filtered$genus
+ 
+fviz_pca_biplot(res.pca_filtered, 
+                # Color individuals by the filtered genus variable
+                habillage = group_variable_filtered,
+                addEllipses = TRUE, 
+                ellipse.level = 0.95, 
+                label = "var", 
+                repel = TRUE, 
+                # FIX: FORCE a standard, implemented point shape for ALL points
+                pointshape = 19, # Use filled circle (19) or open circle (1)
+                ggtheme = theme_minimal()
+)
+
+res.pca_filtered <- prcomp(foretnan_filtered, scale = TRUE) 
+group_variable_filtered <- foret_filtered$genus
+
+fig.cap="Figure 2b: Biplot Grouped by Genus)"
+fviz_pca_biplot(res.pca_filtered,                 
+                habillage = group_variable_filtered,
+                addEllipses = TRUE,                 
+                ellipse.level = 0.95,                 
+                label = "var",                 
+                repel = TRUE,                 
+                # FIX: Forces a standard, implemented point shape to fix PCH warnings
+                pointshape = 19, 
+                ggtheme = theme_minimal()) +   
+  ggplot2::theme(legend.position = "none") # Remove the legend
+  
+
+
+
+
+
+```
+4. Interpretation of the Biplot Grouped by Genus
+The most striking feature is the massive overlap among the ellipses for most of the genera . This indicates that, for the vast majority of genera, their mean structural and nutrient traits fall within a highly similar range in this two-dimensional space.
+ Few Separated Genera (Outliers): Despite the high overlap, a few genera (ellipses) appear to be pushed toward the extremes, suggesting they have unique trait combinations:
+
+Genera on the Far Left (Negative Dim 1): The cluster of ellipses on the negative side of Dim 1 is associated with variables like twig.N.cont, leaf.N.cont, and stem.P.cont. These genera tend to be characterized by high nutrient concentrations (Nitrogen and Phosphorus).
+
+Genera on the Far Right (Positive Dim 1): The cluster of ellipses on the positive side of Dim 1 is associated with variables like twig.C.P.ratio, leaf.C.P.ratio, and bark.dry.mat.cont. These genera tend to be characterized by high structural ratios (high C:P) and high dry matter content/density.
+
+Genera on the Far Bottom (Negative Dim 2): Some groups are pulled strongly toward the bottom of Dim 2, associated with variables like stem.N.ratio and twig.C.N.ratio. These genera exhibit unique characteristics regarding their Nitrogen/Carbon ratios compared to the rest.
+
+
+\`\`\`{r}
