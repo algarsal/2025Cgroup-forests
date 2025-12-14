@@ -233,6 +233,16 @@ kable(p_table)
 
 ## ANOVA result interpretation
 
+Based on ANOVA results. It shows all variables : 12 morphological traits and 24 ecological stoichiometry have significant differences between forest types P value (\<0.05).
+
+Leaf traits show extremely strong forest-type effects (p-values up to 10⁻¹⁸³ at species level). because leaves being the organs with the largest surface area exposed to the external environment, their heightened sensitivity to numerous environmental changes, and the relative ease with which these morphological traits can be observed and measured.
+
+Twig, bark, and stem traits All structural traits (dry matter content, tissue density, bark thickness) are also highly significant. This implies systemic shifts in resource allocation under different forest conditions.
+
+Stoichiometric traits (C, N, P) C, N, and P contents are consistently different between forest types All stoichiometric ratios show very strong significance. Species vs genus control: forest-type effects are strongest when accounting for species identity, but they remain robust even at broader taxonomic resolution.
+
+Forest type had a highly significant effect on all measured morphological and stoichiometric traits (ANOVA, p \< 0.05), even after accounting for taxonomic structure at both species and genus levels. Leaf, twig, bark, and stem traits showed consistent differences between forest types, indicating coordinated shifts in plant structural investment and nutrient allocation. The persistence of these effects across taxonomic levels suggests that forest conditions act as a strong environmental filter shaping plant functional traits beyond species or genus identity.
+
 ## Correlation
 
 ```{r}
