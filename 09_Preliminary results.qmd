@@ -1,0 +1,766 @@
+---
+07---
+title: "Preliminary results"
+format: html
+editor: visual
+---
+
+## Preliminary results Group C 
+
+**Title** : Plant morphological traits and ecological stoichiometry in disturbed *vs*. conserved forests
+
+**Data description** : Table S4 shows the data for various functional traits including morphological and nutrient content from leaves collected from disturbed and conserved forests.
+
+**Link supplementary data** : <https://peerj.com/articles/20301/#supp-1>
+
+**Variables** :
+
+1\. Forest type (disturbed vs conserve)
+
+2\. Plant species : 62 species in disturbed forests and 43 species in conserved forests
+
+3\. Traits : 12 morphological traits and 24 ecological stoichiometry traits
+
+4\. Left nutrients concentration and Ratio describing plant nutrient balance
+
+**Objectives** :
+
+1.  To analyze and compare plant functional traits (morphological and stoichiometric traits) in disturbed and conserved forests.
+2.  To examine relationships among various functional traits to investigate disparities in life history strategies between the two forest types.
+
+**Research questions** :
+
+1.  Is there any significant comparison in plant functional traits (morphological and stoichiometric traits) between disturbed and conserved forests.
+2.  Is there significant correlation among various functional traits and the differences in life history strategies between the two forest types.
+
+**Main hypotheses** :
+
+1.  Null Hypothesis (HO): There is no significant difference in plant morphological traits and ecological stoichiometry between disturbed and conserved forests.
+
+    Alternate Hypothesis (H1): Plant morphological traits and ecological stoichiometry differ significantly between disturbed and conserved forests.
+
+2.  Null Hypothesis (HO): There are no correlation among various functional traits and no differences in life history strategies between the two forest types.
+
+    Alternate Hypothesis (H1): There are significant correlation among various functional traits and significant differences in life history strategies between the two forest types.
+
+**Main analyses** :
+
+1.  ANOVA
+2.  Correlation
+3.  Principal Components Analysis
+4.  Discriminant Analysis
+
+```{r - preparation for data analysis}
+
+echo = FALSE
+
+#Download the data
+if (!dir.exists('Data')) dir.create('Data')
+download.file('https://dfzljdn9uc3pi.cloudfront.net/2025/20301/1/Data.xlsx',
+              'Data/forest.xlsx')
+
+#Read the data
+readxl::excel_sheets("Data/Data.xlsx")
+forest_data <- readxl::read_excel("Data/Data.xlsx", sheet = "Table S4", skip = 2)
+
+#Data description
+data_description <- readxl::read_excel("Data/Data.xlsx", sheet = "Table S4", range = "A1:A1", col_names = FALSE)
+
+ #Description of variables 
+data_description <- as.data.frame(data_description)
+data_description[1,1]
+
+#Import data
+library(tidyr)
+dir("Data")
+readxl::excel_sheets("Data/Data.xlsx")
+d <- readxl::read_excel("Data/Data.xlsx","Table S4",skip = 2)
+
+l <- readxl::read_excel("Data/Data.xlsx","Table S4", range = "A1:A1",
+                        col_names = FALSE)
+l <- l[[1]][1]
+
+#fill the data : Species and Forest type
+# names(d)
+foret <- fill(d, Species, "Forest type")
+rm(d)
+#Change the variable names
+
+# names(d)
+# paste(names(d1), collapse = "', '")
+orig.name <- c('Forest type', 'Species', 'Individual number', 'LT (mm)', 'LA (cm²)', 'SLA (cm2 g-1)', 'LDMC (g g-1)', 'LTD (g cm-3)', 'TDMC (g g-1)', 'TTD (g cm-3)', 'BT (mm)', 'BDMC (g g-1)', 'BTD (g cm-3)', 'SDMC (g g-1)', 'STD (g cm-3)', 'LC (mg g-1)', 'LN (mg g-1)', 'LP (mg g-1)', 'LCN', 'LCP', 'LNP', 'TC (mg g-1)', 'TN (mg g-1)', 'TP (mg g-1)', 'TCN', 'TCP', 'TNP', 'BC (mg g-1)', 'BN (mg g-1)', 'BP (mg g-1)', 'BCN', 'BCP', 'BNP', 'SC (mg g-1)', 'SN (mg g-1)', 'SP (mg g-1)', 'SCN', 'SCP', 'SNP')
+
+new.name <- c('For.type', 'Species', 'Ind.number', 'leaf.thick', 'leaf.area', 'spec.leaf.area', 'leaf.dry.mat.cont', 'leaf.tissue.dens', 'twig.dry.mat.cont', 'twig.tis.dens', 'bark.thick', 'bark.dry.mat.cont', 'bark.tis.dens', 'stem.dry.mat.cont', 'stem.tis.dens', 'leaf.C.cont', 'leaf.N.cont', 'leaf.P.cont', 'leaf.C.N.ratio', 'leaf.C.P.ratio', 'leaf.N.P.ratio', 'twig.C.cont', 'twig.N.cont', 'twig.P.cont', 'twig.C.N.ratio', 'twig.C.P.ratio', 'twig.N.P.ratio', 'bark.C.cont', 'bark.N.cont', 'bark.P.cont', 'bark.C.N.ratio', 'bark.C.P.ratio', 'bark.N.P.ratio', 'stem.C.content','stem.N.cont', 'stem.P.cont', 'stem.C.N.ratio', 'stem.C.P.ratio', 'stem.N.P.ratio')
+
+names(foret) <- new.name
+
+#Add Genus Data
+library(stringr)
+foret$genus <- word(foret$Species, 1)
+
+#Change to Numeric data
+n <- which(names(foret)== "genus")
+foret[-c(1,2,n)] <- sapply(foret[-c(1,2,n)],as.numeric)
+
+#Clean real data 
+#is.na(foret$bark.thick)
+foret.c <- na.exclude(foret)
+
+#Save the data
+foret <- foret.c
+save(foret, orig.name, l,
+     file = "Data/foret.Rdata")
+write.csv(foret, file = "Data/foret.csv" )
+
+#Load the data
+load("Data/foret.Rdata")
+```
+
+## ANOVA
+
+```{r - load data : foret}
+load("Data/foret.Rdata")
+ 
+```
+
+```{r - ANOVA Species and Genus}
+
+#For loop for ANOVA
+
+responses <- c("leaf.thick", "leaf.area", "spec.leaf.area", "leaf.dry.mat.cont", "leaf.tissue.dens", "twig.dry.mat.cont", "twig.tis.dens", "bark.thick", "bark.dry.mat.cont", "bark.tis.dens", "stem.dry.mat.cont", "stem.tis.dens", "leaf.C.cont", "leaf.N.cont", "leaf.P.cont", "leaf.C.N.ratio", "leaf.C.P.ratio", "leaf.N.P.ratio", "twig.C.cont", "twig.N.cont", "twig.P.cont", "twig.C.N.ratio", "twig.C.P.ratio", "twig.N.P.ratio", "bark.C.cont", "bark.N.cont", "bark.P.cont", "bark.C.N.ratio", "bark.C.P.ratio", "bark.N.P.ratio", "stem.C.content","stem.N.cont", "stem.P.cont", "stem.C.N.ratio", "stem.C.P.ratio", "stem.N.P.ratio")
+
+for (var in responses) {
+
+    # Check first if variable exists in the dataset
+    if (!(var %in% names(foret))) { # Using foret_clean is better here
+        cat("\nSkipping", var, "-- variable not found in dataset.\n")
+        next
+    }
+
+    # Model 1: Species + Forest Type
+    formula1 <- as.formula(paste(var, "~ Species + For.type"))
+  
+    model1 <- try(aov(formula1, data = foret), silent = TRUE) 
+
+    # Model 2: Genus + Forest Type
+    formula2 <- as.formula(paste(var, "~ genus + For.type"))
+    
+    model2 <- try(aov(formula2, data = foret), silent = TRUE) 
+
+    cat("\n==========================================\n")
+    cat("ANOVA Results for:", var, "\n")
+    cat("==========================================\n")
+
+    # Print Model 1
+    cat("\n📌 Model 1: Species + For.type\n")
+    if (inherits(model1, "try-error")) {
+        cat("ERROR for Model 1:", var, "\n")
+    } else {
+        print(summary(model1))
+    }
+
+    # Print Model 2
+    cat("\n📌 Model 2: genus + For.type\n")
+    if (inherits(model2, "try-error")) {
+        cat("ERROR for Model 2:", var, "\n")
+    } else {
+        print(summary(model2))
+    }
+}
+
+```
+
+```{r - Table for ANOVA}
+
+# Create a data frame to store results
+Table.aov1.aov2 <- data.frame(
+  Trait = c("leaf.thick", "leaf.area", "spec.leaf.area", "leaf.dry.mat.cont", "leaf.tissue.dens", "twig.dry.mat.cont", "twig.tis.dens", "bark.thick", "bark.dry.mat.cont", "bark.tis.dens", "stem.dry.mat.cont", "stem.tis.dens", "leaf.C.cont", "leaf.N.cont", "leaf.P.cont", "leaf.C.N.ratio", "leaf.C.P.ratio", "leaf.N.P.ratio", "twig.C.cont", "twig.N.cont", "twig.P.cont", "twig.C.N.ratio", "twig.C.P.ratio", "twig.N.P.ratio", "bark.C.cont", "bark.N.cont", "bark.P.cont", "bark.C.N.ratio", "bark.C.P.ratio", "bark.N.P.ratio", "stem.C.content","stem.N.cont", "stem.P.cont", "stem.C.N.ratio", "stem.C.P.ratio", "stem.N.P.ratio"),
+  P_value_species = NA,
+  P_value_genus = NA
+)
+
+# List all trait columns (numeric variables)
+trait_cols <- names(foret)[sapply(foret, is.numeric)]
+
+# Create empty dataframe
+p_table <- data.frame(
+  Trait = trait_cols,
+  P_value_species = NA,
+  P_value_genus = NA
+)
+
+# Loop through traits
+for (i in seq_along(trait_cols[-1]) +1) {
+  trait <- trait_cols[i]
+  
+# ANOVA for species
+  model_species <- aov(foret[[trait]] ~ Species, data = foret)
+  p_species <- summary(model_species)[[1]][["Pr(>F)"]][1]
+  
+# ANOVA for genus
+  model_genus <- aov(foret[[trait]] ~ genus, data = foret)
+  p_genus <- summary(model_genus)[[1]][["Pr(>F)"]][1]
+  
+# Save into table
+  p_table$P_value_species[i] <- p_species
+  p_table$P_value_genus[i] <- p_genus
+}
+
+# Print table
+p_table
+
+p_table$P_value_genus>0.05
+p_table$P_value_species>0.05
+```
+
+All variables have significant differences between forest types (see @tbl-anova)
+
+```{r tbl-anova caption}
+#| tbl-cap: P value ANOVA forest type on Plant morphological traits and ecological stoichiometry, controlling for taxonomic level : species and genus
+
+library(knitr)
+p_table$P_value_species <- as.character(p_table$P_value_species)
+p_table$P_value_genus <- as.character(p_table$P_value_genus)
+
+#omit first row of table
+p_table <- p_table[-1, ]
+row.names(p_table) <- NULL
+
+kable(p_table)
+
+
+```
+
+## ANOVA result interpretation
+
+## Correlation
+
+```{r}
+#Correlation between the traits
+
+library(GGally)
+ggpairs(foret, columns = 4:8,
+        aes(color = For.type),
+        upper = list(
+          continuous = wrap("cor", size = 4)),
+        lower = list(
+          continuous = wrap("smooth", 
+                            alpha = 0.3, size = 0.5))) +
+  theme_minimal()
+
+library(GGally)
+ggpairs(foret, columns = 9:13,
+        aes(color = For.type),
+        upper = list(
+          continuous = wrap("cor", size = 4)),
+        lower = list(
+          continuous = wrap("smooth", 
+                            alpha = 0.3, size = 0.5))) +
+  theme_minimal()
+
+library(GGally)
+ggpairs(foret, columns = 14:18,
+        aes(color = For.type),
+        upper = list(
+          continuous = wrap("cor", size = 4)),
+        lower = list(
+          continuous = wrap("smooth", 
+                            alpha = 0.3, size = 0.5))) +
+  theme_minimal()
+
+library(GGally)
+ggpairs(foret, columns = 19:23,
+        aes(color = For.type),
+        upper = list(
+          continuous = wrap("cor", size = 4)),
+        lower = list(
+          continuous = wrap("smooth", 
+                            alpha = 0.3, size = 0.5))) +
+  theme_minimal()
+
+library(GGally)
+ggpairs(foret, columns = 24:28,
+        aes(color = For.type),
+        upper = list(
+          continuous = wrap("cor", size = 4)),
+        lower = list(
+          continuous = wrap("smooth", 
+                            alpha = 0.3, size = 0.5))) +
+  theme_minimal()
+
+library(GGally)
+ggpairs(foret, columns = 29:33,
+        aes(color = For.type),
+        upper = list(
+          continuous = wrap("cor", size = 4)),
+        lower = list(
+          continuous = wrap("smooth", 
+                            alpha = 0.3, size = 0.5))) +
+  theme_minimal()
+
+library(GGally)
+ggpairs(foret, columns = 34:39,
+        aes(color = For.type),
+        upper = list(
+          continuous = wrap("cor", size = 4)),
+        lower = list(
+          continuous = wrap("smooth", 
+                            alpha = 0.3, size = 0.5))) +
+  theme_minimal()
+
+```
+
+## Correlation between traits interpretation
+
+Stem & Leaf nutrient concentrations and tissue density
+
+These figures are pairwise trait‐correlation matrices, split by plant organ (leaf, twig, bark, stem) and forest type (colors: typically conserved vs disturbed forests). Each panel shows:
+
+-   Diagonal: trait distributions (density plots) for the two forest types
+-   Lower triangle: scatterplots + fitted trend (separate by forest type)
+-   Upper triangle: Pearson correlation (r) with significance (*, **,*** )
+-   Colored text = correlations within each forest type
+
+Main patterns
+
+1.  Stem dry matter content ↔ stem tissue density
+    -   Strong positive correlation (r ≈ 0.81)
+    -   Interpretation: denser stems have more dry matter → structural investment strategy
+2.  Leaf N ↔ Leaf P content
+    -   Very strong positive correlation (r ≈ 0.82)
+    -   Classic leaf economics spectrum: nutrient-rich leaves are coordinated
+3.  Leaf C vs N/P
+    -   Weak to moderately negative correlations
+    -   Carbon-rich leaves tend to be nutrient poorer, reflecting trade-off between structure and metabolism
+4.  Forest-type effect
+    -   Disturbed forests often show slightly higher nutrient concentrations and wider distributions
+    -   Suggests faster-growth strategies under disturbance
+
+Ecological takeaway
+
+Stem traits reflect mechanical strategy, leaf traits reflect metabolic strategy, and these are only weakly coupled.
+
+------------------------------------------------------------------------
+
+Twig & Bark physical traits
+
+Main patterns
+
+1.  Twig dry matter ↔ twig tissue density
+    -   Strong positive (r ≈ 0.65)
+    -   Denser twigs = more conservative growth
+2.  Bark thickness ↔ bark density
+    -   Moderate negative correlation
+    -   Thick bark tends to be less dense, typical of fire or disturbance protection strategies
+3.  Twig traits ↔ bark traits
+    -   Generally positive correlations
+    -   Indicates whole-plant structural coordination
+4.  Forest differences
+    -   Disturbed forests show higher variance and steeper slopes
+    -   Indicates trait plasticity under stress/disturbance
+
+Ecological takeaway
+
+Twig and bark traits scale together as part of a defensive/structural syndrome, especially important under disturbance.
+
+------------------------------------------------------------------------
+
+Twig nutrient content & stoichiometry
+
+Main patterns
+
+1.  Twig P content ↔ C:P ratio
+    -   Strong negative correlation (r ≈ −0.76)
+    -   Mathematical + biological: more P → lower C:P → higher nutrient availability
+2.  C:N ↔ C:P ratios
+    -   Positive correlation
+    -   Species with conservative nutrient use are conservative across elements
+3.  N:P ratio ↔ C:N / C:P
+    -   Negative correlations
+    -   Reflects nutrient limitation gradients (N vs P limitation)
+4.  Bark C content
+    -   Weak correlations → bark is more structural & inert
+
+Ecological takeaway
+
+Twig chemistry strongly reflects nutrient limitation strategies, while bark chemistry is relatively decoupled.
+
+------------------------------------------------------------------------
+
+Leaf stoichiometry & twig nutrients
+
+Main patterns
+
+1.  Leaf C:N ↔ leaf C:P
+    -   Very strong positive (r ≈ 0.81)
+    -   Strongly coordinated nutrient economics
+2.  Leaf N:P ↔ leaf C:P
+    -   Positive → confirms P limitation signal
+3.  Twig N ↔ leaf N:P
+    -   Negative correlation
+    -   Higher twig N corresponds to less P limitation in leaves
+4.  Forest differences
+    -   Disturbed forests cluster toward lower C:N and C:P
+    -   Indicates acquisitive nutrient strategy
+
+Ecological takeaway
+
+Leaves are the best indicators of nutrient limitation and productivity strategy.
+
+------------------------------------------------------------------------
+
+Figure 5 — Leaf morphology & economics
+
+Main patterns
+
+1.  Specific leaf area (SLA) ↔ leaf dry matter content
+    -   Strong negative correlation (r ≈ −0.67)
+    -   Core Leaf Economics Spectrum
+2.  Leaf area ↔ SLA
+    -   Positive correlation
+    -   Large leaves tend to be thinner and resource-acquisitive
+3.  Leaf thickness ↔ tissue density
+    -   Positive but weaker
+    -   Two independent ways to increase structural investment
+4.  Forest differences
+    -   Disturbed forests show higher SLA and lower tissue density
+    -   Indicates fast-growth, short-lived leaves
+
+Ecological takeaway
+
+This figure perfectly captures the fast–slow leaf economics axis.
+
+------------------------------------------------------------------------
+
+Figure 6 — Bark nutrient stoichiometry
+
+Main patterns
+
+1.  Bark N ↔ bark P
+    -   Moderate positive correlation
+    -   Coordinated nutrient storage
+2.  C:N & C:P ratios ↔ N/P contents
+    -   Strong negative correlations
+    -   Stoichiometry dominated by nutrient dilution
+3.  N:P ratio ↔ C:P ratio
+    -   Strong positive (r ≈ 0.74)
+    -   Indicates P limitation signal even in bark
+4.  Forest-type effect
+    -   Disturbed forests tend to lower C:N and C:P
+    -   More nutrient-rich bark
+
+Ecological takeaway
+
+Bark, though structural, still reflects long-term nutrient strategy.
+
+------------------------------------------------------------------------
+
+Figure 7 — Stem nutrient content & stoichiometry
+
+Main patterns
+
+1.  Stem N ↔ stem P
+    -   Strong positive (r ≈ 0.44)
+    -   Coordinated nutrient allocation
+2.  Stem C:N ↔ stem N content
+    -   Strong negative (r ≈ −0.90)
+    -   Carbon dilution effect
+3.  C:P ↔ N:P ratios
+    -   Strong positive
+    -   Reflects integrated nutrient limitation
+4.  Forest differences
+    -   Disturbed forests show higher nutrient contents and lower stoichiometric ratios
+
+Ecological takeaway
+
+Stem chemistry integrates long-term nutrient availability and growth strategy.
+
+------------------------------------------------------------------------
+
+Traits cluster into three coordinated axes:
+
+1\. Structural investment (density, dry matter)\
+2. Nutrient economics (N, P, stoichiometry)\
+3. Growth strategy (SLA, leaf area)
+
+Disturbed forests consistently show higher nutrient contents, lower C:N and C:P ratios, and higher SLA → faster, more acquisitive strategies.
+
+## Principal Component Analysis
+
+```{r load data}
+library(stringr)
+#Load the data
+load("Data/foret.Rdata")
+foret$genus <- word(foret$Species, 1)
+
+```
+
+```{r Setup and Data Preparation}
+ls()
+#foret_active <- foret[, c(2:4, 6:10)]
+foret_active <- foret[, sapply(foret, is.numeric)]
+nrow(foret)
+unique(foret$For.type)
+unique(foret$Species)
+
+
+df <- data.frame(
+  other_var = c("a", "b", "c"),
+  bark.thick = as.character(c(1.5, 2.1, 1.8)),
+  bark.dry.mat.cont = as.character(c(0.4, 0.5, 0.3)),
+  stem.tis.dens = as.character(c(0.6, 0.7, 0.5)),
+  stringsAsFactors = FALSE
+)
+
+# A vector containing the names of the columns you want to convert
+my_variables <- c("bark.thick", "bark.dry.mat.cont", "bark.tis.dens", "stem.dry.mat.cont", "stem.tis.dens", "bark.C.cont", "bark.N.cont", "bark.P.cont","bark.C.N.ratio", "bark.C.P.ratio", "bark.N.P.ratio", "stem.C.content","stem.N.cont", "stem.P.cont", "stem.C.P.ratio", "stem.N.P.ratio", "stem.C.N.ratio")
+
+for(i in my_variables){
+  foret[[i ]] <- as.numeric(foret[[i]])
+}
+
+numerical_vars <- names(foret)[sapply(foret, is.numeric)]
+foret$bark.thick <- as.numeric(foret$bark.thick)
+
+```
+
+```{r PCA packages for anlysis }
+
+#install.packages("FactoMineR")
+#install.packages("factoextra")
+
+library(FactoMineR)
+library(factoextra)
+
+res <- PCA(foret_active, scale.unit = TRUE, graph = FALSE)
+
+```
+
+```{r PCA Scree plot and Variance }
+
+graph = FALSE 
+res.pca <- PCA(foret_active, scale.unit = TRUE, graph = FALSE)
+fviz_eig(res.pca, addlabels = TRUE)
+fviz_pca_var(res.pca)
+fviz_pca_ind(res.pca,
+             geom.ind = "point", # show points only (not text labels)
+             col.ind = "cos2",   # Color by quality of representation
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE)
+```
+
+The Scree Plot shows the Percentage of Explained Variance for the first 10 dimensions (Principal Components). This plot helps us determine how many components are meaningful to retain for further analysis.
+
+Key Observations:PC1 Dominance (Dimension 1): The first component (Dim 1) is the most important, explaining 24.3% of the total variance in the dataset. PC2 Contribution (Dimension 2): The second component (Dim 2) is also significant, explaining 14.2% of the variance.Cumulative Variance: Together, PC1 and PC2 explain 24.3 + 14.2 = 38.5% of the total variance. The "Elbow": The curve drops steeply from Dim 1 to Dim 2. There is a noticeable "bend" or "elbow" after Dimension 2 or possibly Dimension 3.The drop from Dim 2 (14.2%) to Dim 3 (7.8%) is large. The curve begins to flatten significantly after Dim 3.
+
+The variable plot shows the arrows on the two main components, Dim 1 and Dim 2. Length: Longer arrows indicate variables that are better represented by the two dimensions (i.e., the variables are strongly correlated with PC1 or PC2). Direction (Grouping): Variables pointing in same direction are positively correlated with each other. Variables pointing in opposite directions are negatively correlated.Projection: The closer an arrow is to an axis, the more that variable contributes to that specific component.
+
+Interpretation of Dimensions: Dimension 1 (Dim 1 - Horizontal Axis, 24.3%): This axis seems to represent a contrast between physical/structural characteristics and some nutritional ratios.
+
+Positive Side (Right): Variables highly associated with this side include structural/density measures like bark.dry.mat.cont, bark.thick, stem.C.P.ratio, leaf.C.P.ratio, and twig.C.P.ratio. This dimension appears to be a composite of Structural Carbon-to-Nutrient Ratios and Density/Thickness.
+
+Negative Side (Left): Variables on this side are related to concentrations like twig.N.cont, leaf.N.cont, and stem.N.cont. This suggests a factor related to Nitrogen (N) Content or Concentration.
+
+Tentative Name for Dim 1: Structural vs. Nutritional Concentration.
+
+Dimension 2 (Dim 2 - Vertical Axis, 14.2%): This axis separates variables related to stem and bark properties from other leaf/twig properties.
+
+Positive Side (Top): Variables pointing up include stem.N.cont, bark.N.cont, twig.tis.dens. This dimension might relate to Stem and Bark Nutrient/Density Properties.
+
+Negative Side (Bottom): Variables pointing down include bark.P.ratio and leaf.P.ratio. This suggests a contrast with some Phosphorus (P) Ratios.
+
+Tentative Name for Dim 2: Stem/Bark Nutrient Density.
+
+```{r  Comparison: Forest Type}
+fig.cap="Figure 1:Biplot Grouped by Forest Type"
+
+res.pca <- prcomp(foret[, 3:10],  scale = TRUE)
+
+
+group_variable <- foret$For.type
+fviz_pca_biplot(res.pca, 
+                # Color individuals by the 'Species' variable
+                habillage = group_variable,
+                addEllipses = TRUE, # Optional: Add ellipses around groups
+                ellipse.level = 0.95, # Optional: Set ellipse confidence level
+                label = "var", # Only label variables (arrows/text)
+                repel = TRUE, # Avoid text overlapping
+                ggtheme = theme_minimal() # Use a clean ggplot theme
+                )
+```
+
+The Biplot Grouped by Forest Type Observation Overlap: There is a significant amount of overlap between the two ellipses and the two groups of points. This tells that "Conserved forests" and "Disturbed forests" are not perfectly distinct based.
+
+Separation Along Dim 1 (Horizontal Axis):
+
+The center of the Conserved forests (red ellipse) is shifted slightly to the Left (Negative) side of the Dim 1 axis. The center of the Disturbed forests (blue/teal ellipse) is shifted slightly to the Right (Positive) side of the Dim 1 axis.
+
+Separation Along Dim 2 (Vertical Axis): There is very little separation between the centers of the two groups along the Dim 2 axis. The two groups share a similar range of scores on this second component.
+
+Conserved Forests (Negative Dim 1): These forests tend to be associated with the variables on the left side of the plot, which you identified as having higher Nitrogen (N) Content or Concentration (twig.N.cont, leaf.N.cont, stem.N.cont, etc.). This suggests the trees in conserved forests might have higher overall nutrient concentrations.
+
+Disturbed Forests (Positive Dim 1): These forests tend to be associated with the variables on the right side of the plot, which you identified as representing Structural Carbon-to-Nutrient Ratios and Density/Thickness (bark.dry.mat.cont, leaf.C.P.ratio, etc.). This suggests the trees in disturbed forests might prioritize structural traits or have higher C:P ratios, possibly due to nutrient limitation or different growth strategies in a more stressful/disturbed environment.
+
+```{r  Biplot Grouped by Genus}
+fig.cap="Figure 2a: Biplot Grouped by Genus"
+
+res.pca <- prcomp(foret[, 3:10],  scale = TRUE)
+genus_counts <- table(foret$genus)
+valid_genera <- names(genus_counts[genus_counts >= 3])
+foret_filtered <- foret[foret$genus %in% valid_genera, ]
+foretnan_filtered <- foret_filtered[, numerical_vars]
+res.pca_filtered <- prcomp(foretnan_filtered, scale = TRUE) 
+group_variable_filtered <- foret_filtered$genus
+ 
+fviz_pca_biplot(res.pca_filtered, 
+                # Color individuals by the filtered genus variable
+                habillage = group_variable_filtered,
+                addEllipses = TRUE, 
+                ellipse.level = 0.95, 
+                label = "var", 
+                repel = TRUE, 
+                # FIX: FORCE a standard, implemented point shape for ALL points
+                pointshape = 19, # Use filled circle (19) or open circle (1)
+                ggtheme = theme_minimal()
+)
+
+res.pca_filtered <- prcomp(foretnan_filtered, scale = TRUE) 
+group_variable_filtered <- foret_filtered$genus
+
+fig.cap="Figure 2b: Biplot Grouped by Genus)"
+fviz_pca_biplot(res.pca_filtered,                 
+                habillage = group_variable_filtered,
+                addEllipses = TRUE,                 
+                ellipse.level = 0.95,                 
+                label = "var",                 
+                repel = TRUE,                 
+                # FIX: Forces a standard, implemented point shape to fix PCH warnings
+                pointshape = 19, 
+                ggtheme = theme_minimal()) +   
+  ggplot2::theme(legend.position = "none") # Remove the legend
+  
+
+```
+
+Interpretation of the Biplot Grouped by Genus The most striking feature is the massive overlap among the ellipses for most of the genera . This indicates that, for the vast majority of genera, their mean structural and nutrient traits fall within a highly similar range in this two-dimensional space. Few Separated Genera (Outliers): Despite the high overlap, a few genera (ellipses) appear to be pushed toward the extremes, suggesting they have unique trait combinations:
+
+Genera on the Far Left (Negative Dim 1): The cluster of ellipses on the negative side of Dim 1 is associated with variables like twig.N.cont, leaf.N.cont, and stem.P.cont. These genera tend to be characterized by high nutrient concentrations (Nitrogen and Phosphorus).
+
+Genera on the Far Right (Positive Dim 1): The cluster of ellipses on the positive side of Dim 1 is associated with variables like twig.C.P.ratio, leaf.C.P.ratio, and bark.dry.mat.cont. These genera tend to be characterized by high structural ratios (high C:P) and high dry matter content/density.
+
+Genera on the Far Bottom (Negative Dim 2): Some groups are pulled strongly toward the bottom of Dim 2, associated with variables like stem.N.ratio and twig.C.N.ratio. These genera exhibit unique characteristics regarding their Nitrogen/Carbon ratios compared to the rest.
+
+## Discriminant Analysis 
+
+```{r library load}
+# Load the MASS package for LDA
+library(MASS)
+library(ggplot2)
+library(dplyr)
+
+```
+
+```{r LDA Analysis}
+# Load the necessary library for LDA
+library(MASS) 
+
+# --- Data Preparation for LDA ---
+
+# 1. Combine the numerical predictors (foret_active) and the grouping factor (For.type)
+lda_data <- foret_active 
+lda_data$Group <- foret$For.type
+
+# 2. Filter out rows with NA values (missing data)
+# This creates the clean dataset required by the lda() function
+lda_data_complete <- na.omit(lda_data)
+
+# 3. Separate the predictors and the factor variable
+# All columns except the last (Group) are the predictors
+active_vars_complete <- lda_data_complete[, -ncol(lda_data_complete)] 
+# The last column is the grouping factor
+group_var_complete <- lda_data_complete$Group
+
+# --- Performing the LDA ---
+
+# 4. Perform the LDA
+# 'group_var_complete ~ .' predicts the group using all variables in active_vars_complete
+lda_result <- lda(group_var_complete ~ ., data = active_vars_complete)
+
+# 5. View the results
+print(lda_result)
+```
+
+The Coefficients of Linear Discriminants (LD1)
+
+The magnitude and sign of the coefficients tells that:
+
+·Magnitude (Absolute Value): How important the variable is in separating the groups. Larger absolute values mean the variable is a stronger discriminator. The analysis generated one discriminant function, confirming a strong ecological division between the two forest types, primarily driven by a trade-off between Nutrient Acquisition and Structural Investment.
+
+Conserved Forests: These samples are positioned on the negative end of LD1. They exhibit a Nutrient-Acquisition Strategy, characterized by higher by higher absolute N:P concentrations and lower C:P
+
+Disturbed Forests: These samples are positioned on the positive end of LD1. They exhibit a Structural-Investment Strategy, characterized by higher Dry Matter Content and significantly higher C:P
+
+Top Discriminatory Traits (LD1 Coefficients)The coefficients of LD1 indicate the relative contribution and direction of each trait to the separation. The ecological differences are overwhelmingly driven by traits related to Phosphorus cycling and Dry Matter Content (DMC) in structural tissues.The five traits with the largest absolute coefficients, and thus the most influential in the discrimination, are: stem.P.cont, bark.dry.mat.cont,twig.dry.mat.cont, stem.dry.mat.cont, bark.P.cont.
+
+```{r data preparation for visualization}
+# 1. Generate the LDA scores (predictions)
+# This converts the multidimensional data into scores along the single LD1 axis.
+# This assumes 'lda_result' and 'active_vars_complete' are available from the previous step.
+lda_scores <- predict(lda_result, active_vars_complete)$x
+
+# 2. Create a data frame for plotting
+# We need the LD1 score and the Group variable
+lda_plot_data <- data.frame(
+  LD1 = lda_scores[, 1],
+  Group = group_var_complete
+)
+
+# 3. Plot the density curves
+fig.cap="Figure 3: Linear Discriminant 1 (LD1) Scores Grouped by Forest Type"
+
+
+ggplot(lda_plot_data, aes(x = LD1, fill = Group)) +
+  # Use geom_density() to show the smooth distribution of scores
+  geom_density(alpha = 0.6) +
+  # Add a vertical line at 0 for reference (the theoretical decision boundary if priors were equal)
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black") +
+  labs(
+    title = "Separation of Forest Types along Linear Discriminant 1",
+    x = "Linear Discriminant 1 (LD1)",
+    y = "Density"
+  ) +
+  # Manually set colors for clarity in the report
+  scale_fill_manual(values = c("Conserved forests" = "#FC4E07", "Disturbed forests" = "#00AFBB")) +
+  theme_minimal()
+
+```
+
+The density plot above projects the scores of all individual forest samples onto the single optimal discriminant axis (LD1). The two distributions clearly illustrate the effectiveness of the measured traits in separating the two forest types. Excellent Separation: The density curves for "Conserved forests" (orange) and "Disturbed forests" (teal) show a high degree of separation with minimal overlap. This confirms that the combined suite of structural and nutritional traits successfully captures the underlying ecological differences between the two groups. Conserved Forests (Orange): The distribution is centered on the negative side of LD1 Mean score approx -1.5. As identified by the negative coefficients in the LDA, this side of the axis is associated with traits like high stem and bark Phosphorus content
+
+Disturbed Forests (Teal): The distribution is centered on the positive side of LD1 (Mean score approx +1.5. This side is associated with positive coefficients for traits like high twig dry matter content
+
+**LDA Result Interpretation**
+
+-   Interpretation of the LDA Density Plot (LD1)
+
+Key Observations: Group Means (Vertical Dashed Lines):
+
+The Conserved forests (red) mean is positioned to the left of zero (in the negative score range).
+
+The Disturbed forests (blue) mean is positioned to the right of zero (in the positive score range).
+
+This confirms the LDA successfully created an axis (LD1) that places the mean of the Conserved group at one end and the mean of the Disturbed group at the other.
+
+-   Overlap and Separation:
+
+High Overlap: There is a substantial region of overlap where the two density curves intersect (roughly between scores -1.0 and 1.5). This indicates that many individual samples, whether Conserved or Disturbed, have very similar trait combinations and would be difficult to classify correctly based on LD1 alone.
+
+Good Separation at Extremes: The LDA does a very good job of identifying the extreme samples. The tails of the distributions (scores below -2.0 and above 2.5) are distinct.
+
+Samples with a very low LD1 score are almost certainly Conserved forests.
+
+Samples with a very high LD1 score are almost certainly Disturbed forests.
+
+Discriminative Traits: The separation is overwhelmingly driven by a trade-off between bark phosphorus content (favoring Conserved forests) and bark tissue density (favoring Disturbed forests)
+
+The `echo: false` option disables the printing of code (only output is displayed).
