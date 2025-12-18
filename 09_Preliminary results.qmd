@@ -16,7 +16,6 @@ format:
     title-block-banner: true
 ---
 
-
 ## Title : Plant morphological traits and ecological stoichiometry in disturbed *vs*. conserved forests
 
 **Data description** : Table S4 shows the data for various functional traits including morphological and nutrient content from leaves collected from disturbed and conserved forests.
@@ -33,11 +32,9 @@ format:
 
 4\. Left nutrients concentration and Ratio describing plant nutrient balance
 
+## Introduction
 
-##Introduction
-
-Forests are globally significant ecosystems, providing critical ecosystem services such as carbon sequestration, climate regulation, soil protection, and the maintenance of essential biodiversity. The functional integrity of these ecosystems is intrinsically linked to the traits of the dominant plant communities that inhabit them. Understanding how plant traits vary in response to environmental filtering is paramount for effective conservation and management planning.
-Plant functional traits—specifically morphological traits (like leaf area or tissue density) and ecological stoichiometric traits (like carbon, nitrogen, and phosphorus content and ratios)—serve as measurable proxies for an organism's life history strategy and its resource economy (Source 12, 15). By comparing these traits between conserved and disturbed forest areas, researchers can identify shifts in community-wide resource allocation strategies. Trait variation often reflects a fundamental biological trade-off: a conservative strategy prioritizing longevity, structure, and low resource turnover (typically found in stable environments) versus an acquisitive strategy prioritizing rapid growth, high metabolic rates, and quick resource acquisition (often found in resource-rich or disturbed environments).
+Forests are globally significant ecosystems, providing critical ecosystem services such as carbon sequestration, climate regulation, soil protection, and the maintenance of essential biodiversity. The functional integrity of these ecosystems is intrinsically linked to the traits of the dominant plant communities that inhabit them. Understanding how plant traits vary in response to environmental filtering is paramount for effective conservation and management planning. Plant functional traits—specifically morphological traits (like leaf area or tissue density) and ecological stoichiometric traits (like carbon, nitrogen, and phosphorus content and ratios)—serve as measurable proxies for an organism's life history strategy and its resource economy (Source 12, 15). By comparing these traits between conserved and disturbed forest areas, researchers can identify shifts in community-wide resource allocation strategies. Trait variation often reflects a fundamental biological trade-off: a conservative strategy prioritizing longevity, structure, and low resource turnover (typically found in stable environments) versus an acquisitive strategy prioritizing rapid growth, high metabolic rates, and quick resource acquisition (often found in resource-rich or disturbed environments).
 
 **Objectives** :
 
@@ -93,9 +90,8 @@ PCA was performed on the full set of 36 log-transformed traits. The goal of the 
 
 To formally quantify the separation between the two forest types, an LDA was performed. Unlike PCA, which is unsupervised, LDA is a supervised method that explicitly seeks to maximize the separation of the pre-defined groups (Conserved and Disturbed). • The LDA generated a single Discriminant Axis (LD1), which represents the linear combination of traits that best discriminates between the two forest types. • The coefficients of the LD1 equation identified the specific traits (e.g., P concentration, C:P ratio) that were most crucial in differentiating the Conserved and Disturbed samples. • A Density Plot was generated to visualize the distribution of samples along the LD1 axis, allowing for a statistical interpretation of group separation and overlap.
 
-```{r - preparation for data analysis}
+```{r - preparation for data analysis, echo = FALSE}
 
-echo = FALSE
 
 #Download the data
 if (!dir.exists('Data')) dir.create('Data')
@@ -159,12 +155,7 @@ write.csv(foret, file = "Data/foret.csv" )
 load("Data/foret.Rdata")
 ```
 
-## ANOVA
-
-```{r - load data : foret}
-load("Data/foret.Rdata")
- 
-```
+## ANOVA  
 
 ```{r - ANOVA Species and Genus}
 
@@ -808,10 +799,10 @@ Discriminative Traits: The separation is overwhelmingly driven by a trade-off be
 
 The `echo: false` option disables the printing of code (only output is displayed).
 
-### **Discussion**
+## Discussion
 
 Separation of Forest Types and the Trait Trade-OffThe preliminary analyses consistently demonstrated a significant ecological distinction between the conserved and disturbed forest sites, confirming the Alternate Hypothesis ($H_1$) that Plant morphological traits and ecological stoichiometry differ significantly between disturbed and conserved forests3.The Analysis of Variance (ANOVA) established that all 36 measured traits, spanning leaf, twig, bark, and stem components, showed significant differences between the two forest types when controlling for taxonomic level (species or genus)4. This global difference was then optimally captured by the Linear Discriminant Analysis (LDA), which generated a single axis (LD1) that effectively separated the two groups with minimal overlap at the distribution extremes5.The LDA results revealed that the separation along LD1 represents a fundamental ecological trade-off between Nutrient Acquisition and Structural Investment6:Conserved Forests (Negative LD1): These samples were overwhelmingly associated with a Nutrient-Acquisition Strategy7. This is characterized by higher absolute concentrations of limiting nutrients, specifically high stem and bark Phosphorus content (stem.P.cont, bark.P.cont)88888. High nutrient content suggests an environment where resources are efficiently maintained and stored.Disturbed Forests (Positive LD1): These samples clustered on the opposite end of LD1 and were associated with a Structural-Investment Strategy9. This strategy is defined by high Dry Matter Content (bark.dry.mat.cont, twig.dry.mat.cont, stem.dry.mat.cont) and high Carbon-to-Phosphorus ratios (leaf.C.P.ratio, twig.C.P.ratio)101010101010101010.Trait Coordination and Life History StrategiesThe Principal Component Analysis (PCA) and pairwise trait-correlation matrices supported the second Alternate Hypothesis ($H_1$) by showing that the traits clustered into three coordinated axes: Structural investment, Nutrient economics, and Growth strategy11.The patterns within the Disturbed Forests align with the acquisitive, fast-growth end of the global economics spectrum121212:They exhibited higher Specific Leaf Area (SLA) and lower leaf tissue density (DMC) 13, which are classic indicators of fast growth and resource acquisition14.They displayed slightly higher overall nutrient contents (N and P) in structural organs (bark and stem)15151515, which, in conjunction with high SLA, suggests the species present are quick colonizers that maximize resource uptake in a less competitive environment.Conversely, the Conserved Forests demonstrated traits indicative of a more conservative, slow-growth strategy:Lower SLA and higher tissue density, favoring longevity and structural protection over rapid biomass gain16.While the LDA showed high absolute P content (Nutrient Acquisition), the overall structural emphasis supports a strategy of resource conservation and defense, which is typical of late-successional species in stable environments17.In summary, the statistical analyses strongly indicate that the disturbance event has functioned as a powerful environmental filter, successfully selecting for plant species and functional traits that support a fast, resource-acquisitive life history strategy, distinct from the structural and nutrient-conserving strategies prevalent in the conserved forest.
 
-### **Conclusions**
+## Conclusions
 
 This preliminary analysis establishes a clear and significant divergence in plant functional traits between the conserved and disturbed forest environments. The discriminant analysis isolated a core ecological trade-off, demonstrating that the disturbed forest community is characterized by a high structural investment strategy (high dry matter content and C:P ratios), while the conserved forest community favors a nutrient acquisition and storage strategy (high absolute N and P concentrations). This functional differentiation confirms the ecological shift imposed by the disturbance, successfully setting the stage for deeper investigation into the underlying drivers of these life history strategies.
