@@ -1,9 +1,19 @@
 ---
-07---
 title: "Preliminary results"
-format: html
-editor: visual
-author: "Members: Ahdamson, Ahmed; Eldina, Gresia; Kelly, Ngwankfu; Hejase, Miguel"
+subtitle: Anova, Correlation, Pricincipal components, Least Discriminant analysis
+author: 
+  - name: Adamson Ahmed
+    affiliation: Universitat Politecnica de Valencia
+  - name: Gresia Eldin
+    affiliation: Universitat Politecnica de Valencia
+  - name: Ngwankfu Kelly 
+    affiliation: Universitat Politecnica de Valencia
+  - name: Miguel Hejase
+    affiliation: Universitat Politecnica de Valencia
+title-block-banner: true
+format: 
+  html:
+    title-block-banner: true
 ---
 
 ## Preliminary results Group C
@@ -260,8 +270,8 @@ p_table$P_value_species>0.05
 
 All variables have significant differences between forest types (see @tbl-anova)
 
-```{r tbl-anova caption}
-#| tbl-cap: P value ANOVA forest type on Plant morphological traits and ecological stoichiometry, controlling for taxonomic level : species and genus
+```{r tbl-anovacaption}
+#| tbl-cap: "P value ANOVA forest type on Plant morphological traits and ecological stoichiometry, controlling for taxonomic level : species and genus"
 
 library(knitr)
 p_table$P_value_species <- as.character(p_table$P_value_species)
