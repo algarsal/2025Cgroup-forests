@@ -1,0 +1,89 @@
+## `r genus`
+
+```{r }
+d <- 
+  foret[foret$genus == genus, ]
+foretn <- d[, numerical_vars]
+group_variable <- d$For.type
+res.pca <- prcomp(foretn,  scale = TRUE)
+
+
+
+
+group_variable <- d$For.type
+fviz_pca_biplot(res.pca, 
+                # Color individuals by the 'Species' variable
+                habillage = group_variable,
+                addEllipses = TRUE, # Optional: Add ellipses around groups
+                ellipse.level = 0.95, # Optional: Set ellipse confidence level
+                label = "var", # Only label variables (arrows/text)
+                repel = TRUE, # Avoid text overlapping
+                ggtheme = theme_minimal() # Use a clean ggplot theme
+                )
+
+          
+```
+```{r }
+# Load the necessary library for LDA
+# library(MASS) 
+
+# --- Data Preparation for LDA ---
+
+# 1. Combine the numerical predictors (foret_active) and the grouping factor (For.type)
+lda_data <- foretn 
+lda_data$Group <- d$For.type
+
+# 2. Filter out rows with NA values (missing data)
+# This creates the clean dataset required by the lda() function
+lda_data_complete <- na.omit(lda_data)
+
+# 3. Separate the predictors and the factor variable
+# All columns except the last (Group) are the predictors
+active_vars_complete <- lda_data_complete[, -ncol(lda_data_complete)] 
+# The last column is the grouping factor
+group_var_complete <- lda_data_complete$Group
+
+# --- Performing the LDA ---
+
+# 4. Perform the LDA
+# 'group_var_complete ~ .' predicts the group using all variables in active_vars_complete
+lda_result <- lda(group_var_complete ~ ., data = active_vars_complete)
+
+# 5. View the results
+# print(lda_result)
+```
+
+
+```{r }
+# 1. Generate the LDA scores (predictions)
+# This converts the multidimensional data into scores along the single LD1 axis.
+# This assumes 'lda_result' and 'active_vars_complete' are available from the previous step.
+lda_scores <- predict(lda_result, active_vars_complete)$x
+
+# 2. Create a data frame for plotting
+# We need the LD1 score and the Group variable
+lda_plot_data <- data.frame(
+  LD1 = lda_scores[, 1],
+  Group = group_var_complete
+)
+
+# 3. Plot the density curves
+fig.cap="Figure 3: Linear Discriminant 1 (LD1) Scores Grouped by Forest Type"
+
+
+ggplot(lda_plot_data, aes(x = LD1, fill = Group)) +
+  # Use geom_density() to show the smooth distribution of scores
+  geom_density(alpha = 0.6) +
+  # Add a vertical line at 0 for reference (the theoretical decision boundary if priors were equal)
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black") +
+  labs(
+    title = "Separation of Forest Types along Linear Discriminant 1",
+    x = "Linear Discriminant 1 (LD1)",
+    y = "Density"
+  ) +
+  # Manually set colors for clarity in the report
+  scale_fill_manual(values = c("Conserved forests" = "#FC4E07", "Disturbed forests" = "#00AFBB")) +
+  theme_minimal()
+
+```
+
