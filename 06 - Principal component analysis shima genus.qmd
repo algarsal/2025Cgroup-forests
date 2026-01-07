@@ -1,0 +1,175 @@
+---
+title: "06 - PRINCIPAL COMPONNET ANALYSIS"
+format: html
+---
+
+```{r loadlibrary}
+library(stringr)
+library(MASS)
+library(ggplot2)
+library(dplyr)
+
+```
+
+
+```{r load data}
+#Load the data
+load("Data/foret.Rdata")
+foret$genus <- word(foret$Species, 1)
+
+
+```
+
+```{r Setup and Data Preparation}
+# ls()
+#foret_active <- foret[, c(2:4, 6:10)]
+foret_active <- foret[, sapply(foret, is.numeric)]
+# nrow(foret)
+# unique(foret$For.type)
+# unique(foret$Species)
+
+
+# df <- data.frame(
+#   other_var = c("a", "b", "c"),
+#   bark.thick = as.character(c(1.5, 2.1, 1.8)),
+#   bark.dry.mat.cont = as.character(c(0.4, 0.5, 0.3)),
+#   stem.tis.dens = as.character(c(0.6, 0.7, 0.5)),
+#   stringsAsFactors = FALSE
+# )
+
+# A vector containing the names of the columns you want to convert
+my_variables <- c("bark.thick", "bark.dry.mat.cont", "bark.tis.dens", "stem.dry.mat.cont", "stem.tis.dens", "bark.C.cont", "bark.N.cont", "bark.P.cont","bark.C.N.ratio", "bark.C.P.ratio", "bark.N.P.ratio", "stem.C.content","stem.N.cont", "stem.P.cont", "stem.C.P.ratio", "stem.N.P.ratio", "stem.C.N.ratio")
+
+for(i in my_variables){
+  foret[[i ]] <- as.numeric(foret[[i]])
+}
+
+numerical_vars <- names(foret)[sapply(foret, is.numeric)]
+foret$bark.thick <- as.numeric(foret$bark.thick)
+```
+
+```{r PCA packages for anlysis }
+
+#install.packages("FactoMineR")
+#install.packages("factoextra")
+
+library(FactoMineR)
+library(factoextra)
+
+# res <- PCA(foret_active, scale.unit = TRUE, graph = FALSE)
+
+```
+
+
+
+```{r }
+genus <- "Schima"
+
+```
+
+```{r}
+#| child: _multiv.qmd
+```
+
+```{r }
+genus <- "Acer"
+
+```
+
+```{r}
+#| child: _multiv.qmd
+```
+
+
+```{r }
+genus <- "Rhododendron"
+
+```
+
+```{r}
+#| child: _multiv.qmd
+```
+\`\`\`{r}
+```{r }
+genus <- "Itea"
+
+```
+
+```{r}
+#| child: _multiv.qmd
+```
+
+```{r }
+genus <- "Phoebe"
+
+```
+
+```{r}
+#| child: _multiv.qmd
+```
+
+```{r}
+genus <- "Castanopsis"
+```
+
+```{r}
+#| child: _multiv.qmd
+```
+
+```{r}
+genus <- "Cunninghamia"
+```
+```{r}
+#| child: _multiv.qmd
+```
+
+
+```{r}
+genus <- "Choerospondias"
+```
+```{r}
+#| child: _multiv.qmd
+```
+
+```{r}
+genus <- "Cyclobalanopsis"
+```
+```{r}
+#| child: _multiv.qmd
+```
+
+```{r}
+genus <- "Dendrobenthamia"
+```
+```{r}
+#| child: _multiv.qmd
+
+```
+
+```{r}
+genus <- "Eurya"
+```
+```{r}
+#| child: _multiv.qmd
+
+```
+
+```{r}
+genus <- "Lindera"
+```
+```{r}
+#| child: _multiv.qmd
+
+```
+
+```{r}
+genus <- "Lithocarpus"
+```
+```{r}
+#| child: _multiv.qmd
+
+```
+
+
+
+
