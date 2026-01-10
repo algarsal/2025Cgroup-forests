@@ -1,6 +1,6 @@
 ---
 title: "Preliminary results"
-subtitle: Anova, Correlation, Pricincipal components, Least Discriminant analysis
+subtitle: Anova, Correlation, Pricincipal components, Linear Discriminant analysis
 author: 
   - name: Adamson Ahmed
     affiliation: Universitat Politecnica de Valencia
