@@ -435,7 +435,7 @@ foret$genus <- word(foret$Species, 1)
 
 ```
 
-```{r Setup and Data Preparation}
+```{r Setup and Data Preparation.}
 ls()
 #foret_active <- foret[, c(2:4, 6:10)]
 foret_active <- foret[, sapply(foret, is.numeric)]
@@ -464,7 +464,7 @@ foret$bark.thick <- as.numeric(foret$bark.thick)
 
 ```
 
-```{r PCA packages for anlysis }
+```{r PCA  1 packages for anlysis }
 
 #install.packages("FactoMineR")
 #install.packages("factoextra")
@@ -495,21 +495,6 @@ Key Observations:PC1 Dominance (Dimension 1): The first component (Dim 1) is the
 
 The variable plot shows the arrows on the two main components, Dim 1 and Dim 2. Length: Longer arrows indicate variables that are better represented by the two dimensions (i.e., the variables are strongly correlated with PC1 or PC2). Direction (Grouping): Variables pointing in same direction are positively correlated with each other. Variables pointing in opposite directions are negatively correlated.Projection: The closer an arrow is to an axis, the more that variable contributes to that specific component.
 
-Interpretation of Dimensions: Dimension 1 (Dim 1 - Horizontal Axis, 24.3%): This axis seems to represent a contrast between physical/structural characteristics and some nutritional ratios.
-
-Positive Side (Right): Variables highly associated with this side include structural/density measures like bark.dry.mat.cont, bark.thick, stem.C.P.ratio, leaf.C.P.ratio, and twig.C.P.ratio. This dimension appears to be a composite of Structural Carbon-to-Nutrient Ratios and Density/Thickness.
-
-Negative Side (Left): Variables on this side are related to concentrations like twig.N.cont, leaf.N.cont, and stem.N.cont. This suggests a factor related to Nitrogen (N) Content or Concentration.
-
-Tentative Name for Dim 1: Structural vs. Nutritional Concentration.
-
-Dimension 2 (Dim 2 - Vertical Axis, 14.2%): This axis separates variables related to stem and bark properties from other leaf/twig properties.
-
-Positive Side (Top): Variables pointing up include stem.N.cont, bark.N.cont, twig.tis.dens. This dimension might relate to Stem and Bark Nutrient/Density Properties.
-
-Negative Side (Bottom): Variables pointing down include bark.P.ratio and leaf.P.ratio. This suggests a contrast with some Phosphorus (P) Ratios.
-
-Tentative Name for Dim 2: Stem/Bark Nutrient Density.
 
 ```{r  Comparison: Forest Type}
 fig.cap="Figure 1:Biplot Grouped by Forest Type"
@@ -591,7 +576,7 @@ Genera on the Far Right (Positive Dim 1): The cluster of ellipses on the positiv
 Genera on the Far Bottom (Negative Dim 2): Some groups are pulled strongly toward the bottom of Dim 2, associated with variables like stem.N.ratio and twig.C.N.ratio. These genera exhibit unique characteristics regarding their Nitrogen/Carbon ratios compared to the rest.
 
 ## Discriminant Analysis
-###  Discriminant Analysis by Forest
+###  General Discriminant Analysis by Forest
 
 ```{r library load}
 # Load the MASS package for LDA
@@ -676,7 +661,7 @@ ggplot(lda_plot_data, aes(x = LD1, fill = Group)) +
 
 ```
 
-## Discriminant Analysis and Principal Component Analysis by Genus
+## Principal Component and Discriminant Analysis Analysis by Genus
 ```{r loadlibrary}
 library(stringr)
 library(MASS)
@@ -686,7 +671,7 @@ library(dplyr)
 ```
 
 
-```{r load data}
+```{r load data.}
 #Load the data
 load("Data/foret.Rdata")
 foret$genus <- word(foret$Species, 1)
@@ -722,7 +707,7 @@ numerical_vars <- names(foret)[sapply(foret, is.numeric)]
 foret$bark.thick <- as.numeric(foret$bark.thick)
 ```
 
-```{r PCA packages for anlysis }
+```{r PCA 2packages for anlysis }
 
 #install.packages("FactoMineR")
 #install.packages("factoextra")
@@ -736,110 +721,111 @@ library(factoextra)
 
 
 
-```{r }
+```{r Schima  }
 genus <- "Schima"
 
 ```
 
-```{r}
+```{r multiv}
 #| child: _multiv.qmd
 ```
 
-```{r }
+```{r Acer }
 genus <- "Acer"
 
 ```
 
-```{r}
+```{r multiv}
 #| child: _multiv.qmd
 ```
 
 
-```{r }
+```{r Rhododendron}
 genus <- "Rhododendron"
 
 ```
 
-```{r}
+```{r multiv}
 #| child: _multiv.qmd
 ```
-\`\`\`{r}
-```{r }
+
+
+```{r Itea }
 genus <- "Itea"
 
 ```
 
-```{r}
+```{r multiv}
 #| child: _multiv.qmd
 ```
 
-```{r }
+```{r Phoebe }
 genus <- "Phoebe"
 
 ```
 
-```{r}
+```{r multiv}
 #| child: _multiv.qmd
 ```
 
-```{r}
+```{r Castanopsis}
 genus <- "Castanopsis"
 ```
 
-```{r}
+```{r multiv}
 #| child: _multiv.qmd
 ```
 
-```{r}
+```{r Cunninghamia}
 genus <- "Cunninghamia"
 ```
-```{r}
+```{r multiv}
 #| child: _multiv.qmd
 ```
 
 
-```{r}
+```{r Choerospondias}
 genus <- "Choerospondias"
 ```
-```{r}
+```{r multiv}
 #| child: _multiv.qmd
 ```
 
-```{r}
+```{r Cyclobalanopsis}
 genus <- "Cyclobalanopsis"
 ```
-```{r}
+```{r multiv}
 #| child: _multiv.qmd
 ```
 
-```{r}
+```{r Dendrobenthamia}
 genus <- "Dendrobenthamia"
 ```
-```{r}
+```{r multiv}
 #| child: _multiv.qmd
 
 ```
 
-```{r}
+```{r Eurya}
 genus <- "Eurya"
 ```
-```{r}
+```{r multiv}
 #| child: _multiv.qmd
 
 ```
 
-```{r}
+```{r Lindera}
 genus <- "Lindera"
 ```
-```{r}
+```{r multiv}
 #| child: _multiv.qmd
 
 ```
 
-```{r}
+```{r Lithocarpus}
 genus <- "Lithocarpus"
 ```
-```{r}
+```{r multiv}
 #| child: _multiv.qmd
 
 ```
@@ -876,8 +862,22 @@ The `echo: false` option disables the printing of code (only output is displayed
 
 ## Discussion
 
-Separation of Forest Types and the Trait Trade-OffThe preliminary analyses consistently demonstrated a significant ecological distinction between the conserved and disturbed forest sites, confirming the Alternate Hypothesis ($H_1$) that Plant morphological traits and ecological stoichiometry differ significantly between disturbed and conserved forests3.The Analysis of Variance (ANOVA) established that all 36 measured traits, spanning leaf, twig, bark, and stem components, showed significant differences between the two forest types when controlling for taxonomic level (species or genus)4. This global difference was then optimally captured by the Linear Discriminant Analysis (LDA), which generated a single axis (LD1) that effectively separated the two groups with minimal overlap at the distribution extremes5.The LDA results revealed that the separation along LD1 represents a fundamental ecological trade-off between Nutrient Acquisition and Structural Investment6:Conserved Forests (Negative LD1): These samples were overwhelmingly associated with a Nutrient-Acquisition Strategy7. This is characterized by higher absolute concentrations of limiting nutrients, specifically high stem and bark Phosphorus content (stem.P.cont, bark.P.cont)88888. High nutrient content suggests an environment where resources are efficiently maintained and stored.Disturbed Forests (Positive LD1): These samples clustered on the opposite end of LD1 and were associated with a Structural-Investment Strategy9. This strategy is defined by high Dry Matter Content (bark.dry.mat.cont, twig.dry.mat.cont, stem.dry.mat.cont) and high Carbon-to-Phosphorus ratios (leaf.C.P.ratio, twig.C.P.ratio)101010101010101010.Trait Coordination and Life History StrategiesThe Principal Component Analysis (PCA) and pairwise trait-correlation matrices supported the second Alternate Hypothesis ($H_1$) by showing that the traits clustered into three coordinated axes: Structural investment, Nutrient economics, and Growth strategy11.The patterns within the Disturbed Forests align with the acquisitive, fast-growth end of the global economics spectrum121212:They exhibited higher Specific Leaf Area (SLA) and lower leaf tissue density (DMC) 13, which are classic indicators of fast growth and resource acquisition14.They displayed slightly higher overall nutrient contents (N and P) in structural organs (bark and stem)15151515, which, in conjunction with high SLA, suggests the species present are quick colonizers that maximize resource uptake in a less competitive environment.Conversely, the Conserved Forests demonstrated traits indicative of a more conservative, slow-growth strategy:Lower SLA and higher tissue density, favoring longevity and structural protection over rapid biomass gain16.While the LDA showed high absolute P content (Nutrient Acquisition), the overall structural emphasis supports a strategy of resource conservation and defense, which is typical of late-successional species in stable environments17.In summary, the statistical analyses strongly indicate that the disturbance event has functioned as a powerful environmental filter, successfully selecting for plant species and functional traits that support a fast, resource-acquisitive life history strategy, distinct from the structural and nutrient-conserving strategies prevalent in the conserved forest.
+Separation of Forest Types and the Trait Trade-Off The preliminary analyses consistently demonstrated a significant ecological distinction between the conserved and disturbed forest sites, confirming the Alternate Hypothesis that Plant morphological traits and ecological stoichiometry differ significantly between disturbed and conserved forests
+
+The Analysis of Variance (ANOVA) established that all 36 measured traits, spanning leaf, twig, bark, and stem components, showed significant differences between the two forest types when controlling for taxonomic level (species or genus)
+
+This global difference was then optimally captured by the Linear Discriminant Analysis (LDA), which generated a single axis (LD1) that effectively separated the two groups with minimal overlap at the distribution extremes
+
+The LDA results revealed that the separation along LD1 represents a fundamental ecological trade-off between Nutrient Acquisition and Structural Investment
+
+Conserved Forests (Negative LD1): These samples were overwhelmingly associated with a Nutrient-Acquisition Strategy7. This is characterized by higher absolute concentrations of limiting nutrients, specifically high stem and bark Phosphorus content (stem.P.cont, bark.P.cont)
+High nutrient content suggests an environment where resources are efficiently maintained and stored.Disturbed Forests (Positive LD1): These samples clustered on the opposite end of LD1 and were associated with a Structural-Investment Strategy
+This strategy is defined by high Dry Matter Content (bark.dry.mat.cont, twig.dry.mat.cont, stem.dry.mat.cont) and high Carbon-to-Phosphorus ratios (leaf.C.P.ratio, twig.C.P.ratio)
+
+The Principal Component Analysis (PCA) and pairwise trait-correlation matrices supported the second Alternate Hypothesis by showing that the traits clustered into three coordinated axes: Structural investment, Nutrient economics, and Growth strategy
+
+In summary, the statistical analyses strongly indicate that the disturbance event has functioned as a powerful environmental filter, successfully selecting for plant species and functional traits that support a fast, resource-acquisitive life history strategy, distinct from the structural and nutrient-conserving strategies prevalent in the conserved forest.
 
 ## Conclusions
 
-This preliminary analysis establishes a clear and significant divergence in plant functional traits between the conserved and disturbed forest environments. The discriminant analysis isolated a core ecological trade-off, demonstrating that the disturbed forest community is characterized by a high structural investment strategy (high dry matter content and C:P ratios), while the conserved forest community favors a nutrient acquisition and storage strategy (high absolute N and P concentrations). This functional differentiation confirms the ecological shift imposed by the disturbance, successfully setting the stage for deeper investigation into the underlying drivers of these life history strategies.
+This preliminary analysis establishes a clear and significant divergence in plant functional traits between the conserved and disturbed forest environments. The discriminant analysis isolated a core ecological trade-off, demonstrating that the disturbed forest community is characterized by a high structural investment strategy (high dry matter content and C:P ratios), while the conserved forest community favors a nutrient acquisition and storage strategy (high absolute N and P concentrations). This functional differentiation confirms the ecological shift imposed by the disturbance, successfully setting the stage for deeper investigation into the underlying drivers of these life history strategies. This aligns with the result from the original paper
