@@ -127,13 +127,6 @@ for (var in responses) {
 
 ```{r - Table for ANOVA}
 
-# Create a data frame to store results
-Table.aov1.aov2 <- data.frame(
-  Trait = c("leaf.thick", "leaf.area", "spec.leaf.area", "leaf.dry.mat.cont", "leaf.tissue.dens", "twig.dry.mat.cont", "twig.tis.dens", "bark.thick", "bark.dry.mat.cont", "bark.tis.dens", "stem.dry.mat.cont", "stem.tis.dens", "leaf.C.cont", "leaf.N.cont", "leaf.P.cont", "leaf.C.N.ratio", "leaf.C.P.ratio", "leaf.N.P.ratio", "twig.C.cont", "twig.N.cont", "twig.P.cont", "twig.C.N.ratio", "twig.C.P.ratio", "twig.N.P.ratio", "bark.C.cont", "bark.N.cont", "bark.P.cont", "bark.C.N.ratio", "bark.C.P.ratio", "bark.N.P.ratio", "stem.C.content","stem.N.cont", "stem.P.cont", "stem.C.N.ratio", "stem.C.P.ratio", "stem.N.P.ratio"),
-  P_value_species = NA,
-  P_value_genus = NA
-)
-
 # List all trait columns (numeric variables)
 trait_cols <- names(foret)[sapply(foret, is.numeric)]
 
@@ -160,9 +153,10 @@ for (i in seq_along(trait_cols[-1]) +1) {
   p_table$P_value_species[i] <- p_species
   p_table$P_value_genus[i] <- p_genus
 }
+#omit first row of table
+p_table <- p_table[-1, ]
+row.names(p_table) <- NULL
 ```
-
-All variables have significant differences between forest types (see @tbl-anova)
 
 ```{r tbl-anovacaption}
 #| tbl-cap: "P value ANOVA forest type on Plant morphological traits and ecological stoichiometry, controlling for taxonomic level : species and genus"
@@ -171,15 +165,13 @@ library(knitr)
 p_table$P_value_species <- as.character(p_table$P_value_species)
 p_table$P_value_genus <- as.character(p_table$P_value_genus)
 
-#omit first row of table
-p_table <- p_table[-1, ]
-row.names(p_table) <- NULL
-
 kable(p_table)
 
 ```
 
 ## ANOVA result interpretation
+
+All variables have significant differences between forest types (see @tbl-anova)
 
 ## Correlation
 
@@ -599,6 +591,7 @@ Genera on the Far Right (Positive Dim 1): The cluster of ellipses on the positiv
 Genera on the Far Bottom (Negative Dim 2): Some groups are pulled strongly toward the bottom of Dim 2, associated with variables like stem.N.ratio and twig.C.N.ratio. These genera exhibit unique characteristics regarding their Nitrogen/Carbon ratios compared to the rest.
 
 ## Discriminant Analysis
+###  Discriminant Analysis by Forest
 
 ```{r library load}
 # Load the MASS package for LDA
@@ -680,6 +673,174 @@ ggplot(lda_plot_data, aes(x = LD1, fill = Group)) +
   # Manually set colors for clarity in the report
   scale_fill_manual(values = c("Conserved forests" = "#FC4E07", "Disturbed forests" = "#00AFBB")) +
   theme_minimal()
+
+```
+
+## Discriminant Analysis and Principal Component Analysis by Genus
+```{r loadlibrary}
+library(stringr)
+library(MASS)
+library(ggplot2)
+library(dplyr)
+
+```
+
+
+```{r load data}
+#Load the data
+load("Data/foret.Rdata")
+foret$genus <- word(foret$Species, 1)
+
+
+```
+
+```{r Setup and Data Preparation}
+# ls()
+#foret_active <- foret[, c(2:4, 6:10)]
+foret_active <- foret[, sapply(foret, is.numeric)]
+# nrow(foret)
+# unique(foret$For.type)
+# unique(foret$Species)
+
+
+# df <- data.frame(
+#   other_var = c("a", "b", "c"),
+#   bark.thick = as.character(c(1.5, 2.1, 1.8)),
+#   bark.dry.mat.cont = as.character(c(0.4, 0.5, 0.3)),
+#   stem.tis.dens = as.character(c(0.6, 0.7, 0.5)),
+#   stringsAsFactors = FALSE
+# )
+
+# A vector containing the names of the columns you want to convert
+my_variables <- c("bark.thick", "bark.dry.mat.cont", "bark.tis.dens", "stem.dry.mat.cont", "stem.tis.dens", "bark.C.cont", "bark.N.cont", "bark.P.cont","bark.C.N.ratio", "bark.C.P.ratio", "bark.N.P.ratio", "stem.C.content","stem.N.cont", "stem.P.cont", "stem.C.P.ratio", "stem.N.P.ratio", "stem.C.N.ratio")
+
+for(i in my_variables){
+  foret[[i ]] <- as.numeric(foret[[i]])
+}
+
+numerical_vars <- names(foret)[sapply(foret, is.numeric)]
+foret$bark.thick <- as.numeric(foret$bark.thick)
+```
+
+```{r PCA packages for anlysis }
+
+#install.packages("FactoMineR")
+#install.packages("factoextra")
+
+library(FactoMineR)
+library(factoextra)
+
+# res <- PCA(foret_active, scale.unit = TRUE, graph = FALSE)
+
+```
+
+
+
+```{r }
+genus <- "Schima"
+
+```
+
+```{r}
+#| child: _multiv.qmd
+```
+
+```{r }
+genus <- "Acer"
+
+```
+
+```{r}
+#| child: _multiv.qmd
+```
+
+
+```{r }
+genus <- "Rhododendron"
+
+```
+
+```{r}
+#| child: _multiv.qmd
+```
+\`\`\`{r}
+```{r }
+genus <- "Itea"
+
+```
+
+```{r}
+#| child: _multiv.qmd
+```
+
+```{r }
+genus <- "Phoebe"
+
+```
+
+```{r}
+#| child: _multiv.qmd
+```
+
+```{r}
+genus <- "Castanopsis"
+```
+
+```{r}
+#| child: _multiv.qmd
+```
+
+```{r}
+genus <- "Cunninghamia"
+```
+```{r}
+#| child: _multiv.qmd
+```
+
+
+```{r}
+genus <- "Choerospondias"
+```
+```{r}
+#| child: _multiv.qmd
+```
+
+```{r}
+genus <- "Cyclobalanopsis"
+```
+```{r}
+#| child: _multiv.qmd
+```
+
+```{r}
+genus <- "Dendrobenthamia"
+```
+```{r}
+#| child: _multiv.qmd
+
+```
+
+```{r}
+genus <- "Eurya"
+```
+```{r}
+#| child: _multiv.qmd
+
+```
+
+```{r}
+genus <- "Lindera"
+```
+```{r}
+#| child: _multiv.qmd
+
+```
+
+```{r}
+genus <- "Lithocarpus"
+```
+```{r}
+#| child: _multiv.qmd
 
 ```
 
